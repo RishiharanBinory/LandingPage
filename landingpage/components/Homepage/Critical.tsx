@@ -47,7 +47,7 @@ export default function MisconceptionsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          Think you&apos;re not eligible?{" "}
+          Still thinking university isn’t for you? {" "}
           <span
             className="italic"
             style={{
@@ -58,19 +58,19 @@ export default function MisconceptionsSection() {
               display: "inline-block",
             }}
           >
-            You might be wrong.
+            Think again.
           </span>
         </motion.h2>
 
         {/* ── Subheading ── */}
         <motion.p
-          className="text-[16px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-14"
+          className="text-[18px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-14"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          Many students in London miss out on funding because of common misconceptions.
+          Many people in London miss out on student funding because they believe they’re not eligible.
         </motion.p>
 
         {/* ── Grid ── */}
@@ -115,17 +115,6 @@ export default function MisconceptionsSection() {
           </div>
         </div>
 
-        {/* ── Bottom note ── */}
-        <motion.p
-          className="text-center mt-12 text-[16px] text-[#aaa] max-w-xl mx-auto leading-relaxed"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.55, duration: 0.5 }}
-        >
-          Most people we speak to assume they&apos;re not eligible —{" "}
-          <span className="text-[#0a0a0a] font-bold">and they&apos;re wrong.</span>
-        </motion.p>
       </div>
     </section>
   );

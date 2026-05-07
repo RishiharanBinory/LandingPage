@@ -178,6 +178,10 @@ function TestimonialCard({
             lineHeight: 1.7,
             margin: 0,
             flex: 1,
+            overflow: "hidden",
+            display: "-webkit-box",
+            WebkitLineClamp: 5,
+            WebkitBoxOrient: "vertical",
           }}
         >
           {quote}
@@ -229,7 +233,6 @@ export default function TestimonialsSection() {
     >
       {/* ── Header ── */}
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 lg:px-16 flex flex-col items-center mb-16">
-
         {/* Tag pill */}
 
         {/* Heading */}
@@ -247,22 +250,20 @@ export default function TestimonialsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          What our{" "}
-          students{" "}
-          are saying
+          What our students say about their journey
         </motion.h2>
 
         {/* Sub */}
         <motion.p
           className="text-center max-w-[440px] mx-auto"
-          style={{ fontSize: "16px", color: "#888", lineHeight: 1.6 }}
+          style={{ fontSize: "18px", color: "#888", lineHeight: 1.6 }}
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          Real students across the UK who thought they weren&apos;t eligible —
-          and were wrong.
+          From thinking it wasn’t possible to successfully getting funded, these
+          are real stories.
         </motion.p>
       </div>
 

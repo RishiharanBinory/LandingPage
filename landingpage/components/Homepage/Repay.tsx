@@ -44,18 +44,18 @@ export default function RepaymentsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          Worried about taking a loan?
+          Worried about repayments?
         </motion.h2>
 
         {/* Sub */}
         <motion.p
-          style={{ fontSize: "16px", color: "#888", lineHeight: 1.7, margin: 0 }}
+          style={{ fontSize: "18px", color: "#888", lineHeight: 1.7, margin: 0 }}
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          Repayments are based on your income — not a fixed monthly bill.
+          You don’t pay a fixed amount, only what you can afford based on your income.
         </motion.p>
 
         {/* Points */}

@@ -54,13 +54,13 @@ export default function FAQSection() {
 
         {/* Subheading */}
         <motion.p
-          className="text-[16px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-12"
+          className="text-[18px] text-[#888] text-center max-w-[480px] mx-auto leading-relaxed mb-12"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          Everything you need to know about UK student finance — straight answers to the questions we hear most.
+          Everything you need to know about UK student finance  straight answers to the questions we hear most.
         </motion.p>
 
         {/* Accordion */}

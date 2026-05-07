@@ -80,8 +80,8 @@ export default function HeroSection() {
               margin: "0 auto",
             }}
           >
-            Check If You Qualify for Student Finance in the UK{" "}<br/>
-            <span style={{ color: "#D6FD70" }}>In 60 Seconds</span>
+            Check if you qualify for Student Finance in the UK <br />
+            <span style={{ color: "#D6FD70" }}>In 60 Seconds!</span>
           </motion.h1>
 
           {/* Subheadline */}
@@ -92,7 +92,7 @@ export default function HeroSection() {
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
               fontWeight: 400,
-              fontSize: "clamp(12px, 2vw, 16px)",
+              fontSize: "clamp(14px, 2vw, 18px)",
               lineHeight: 1.55,
               color: "#ffffff",
               textAlign: "center",
@@ -100,11 +100,12 @@ export default function HeroSection() {
               margin: "24px auto 0",
             }}
           >
-            You could receive{" "}
-            <span style={{ fontWeight: 600 }}>£9,000+ for tuition</span> and up
-            to <span style={{ fontWeight: 600 }}>£13,000/year paid to you</span>{" "}
-            — even if you didn&apos;t study in the UK or don&apos;t have your
-            certificates.
+            You could get{" "}
+            <span style={{ fontWeight: 600 }}>
+              your tuition fees covered £9,000+{" "}
+            </span>{" "}
+            and receive up to
+            <span style={{ fontWeight: 600 }}>£13,000 per year paid directly to you.</span>
           </motion.p>
 
           {/* CTA */}
@@ -126,7 +127,7 @@ export default function HeroSection() {
             <p
               style={{
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontSize: "14px",
+                fontSize: "16px",
                 fontWeight: 400,
                 color: "rgba(255,255,255,0.6)",
                 letterSpacing: "0.04em",

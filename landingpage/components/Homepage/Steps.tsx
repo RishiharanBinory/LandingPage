@@ -60,21 +60,19 @@ export default function SimpleStepsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          We simplify the entire process so you don&apos;t get stuck or
-          rejected.
+         Confused about the process? We make it simple
         </motion.h2>
 
         {/* ── Subheading ── */}
         <motion.p
           className="text-center max-w-[480px] mx-auto mb-16"
-          style={{ fontSize: "16px", color: "#888", lineHeight: 1.6 }}
+          style={{ fontSize: "18px", color: "#888", lineHeight: 1.6 }}
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          From checking your eligibility to receiving expert guidance — three
-          steps to get your funding secured.
+          From eligibility checks to expert guidance, we help you move forward with confidence and secure your funding.
         </motion.p>
 
         {/* ── Steps row ── */}

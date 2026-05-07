@@ -29,7 +29,7 @@ const cards: Card[] = [
     id: "tuition",
     icon: <Banknote size={20} stroke="#000" strokeWidth={2} />,
     label: "Tuition Fee Loan",
-    description: "Up to £9,535/year — paid directly to your university",
+    description: "You don’t pay anything until you’re earning above the threshold, and the loan is written off after 40 years.",
     image: "/img1.png",
   },
   {
@@ -67,19 +67,18 @@ export default function StudentFinanceSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          Here&apos;s what student finance can include.
+          Here’s what Student Finance can include.
         </motion.h2>
 
         {/* Subheading */}
         <motion.p
-          className="text-[16px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-14"
+          className="text-[18px] text-[#888] text-center max-w-[480px] mx-auto leading-relaxed mb-14"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          No upfront payment required. Most students in London are entitled to
-          more than they realise.
+         Student Finance covers your tuition and can support your living costs. Most people don’t realise how much they’re entitled to.
         </motion.p>
 
         {/* ── Light gray bg wrapper behind cards ── */}

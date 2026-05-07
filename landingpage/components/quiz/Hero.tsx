@@ -61,7 +61,7 @@ const QUESTIONS: Question[] = [
     question: "Have you been living in the UK for the past 3 years?",
     sub: "Short trips abroad for vacation or visits do not break this requirement.",
     options: [
-      { label: "Yes — I have lived in the UK for 3+ years", tag: "Most common", next: "q_funding" },
+      { label: "Yes — I have lived in the UK for 3+ years", next: "q_funding" },
       { label: "No — I have not been in the UK for 3 continuous years", next: "NOT_ELIGIBLE" },
     ],
   },
@@ -73,7 +73,7 @@ const QUESTIONS: Question[] = [
     question: "Have you been living in the UK for the past 3 years?",
     sub: "Short trips abroad for vacation or visits do not break this requirement.",
     options: [
-      { label: "Yes — I have lived in the UK for 3+ years", tag: "Most common", next: "q2_settled" },
+      { label: "Yes — I have lived in the UK for 3+ years", next: "q2_settled" },
       { label: "No — I have not been in the UK for 3 continuous years", next: "NOT_ELIGIBLE" },
     ],
   },
@@ -159,7 +159,7 @@ const QUESTIONS: Question[] = [
     question: "Have you previously received a student funding loan?",
     sub: "This includes any tuition fee loan or maintenance loan you have received in prior years.",
     options: [
-      { label: "No — I have never received a student loan", tag: "Most common", next: "ELIGIBLE" },
+      { label: "No — I have never received a student loan",next: "ELIGIBLE" },
       { label: "1 year", next: "ELIGIBLE" },
       { label: "2 years", next: "ELIGIBLE" },
       { label: "3 years", next: "ELIGIBLE" },

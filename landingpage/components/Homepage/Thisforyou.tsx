@@ -101,7 +101,7 @@ export default function ThisIsForYouSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          This is for{" "}
+          This opportunity is for{" "}
           <span
             className="italic"
             style={{ background: "#D6FD70", color: "#0a0a0a", padding: "0 10px 2px", borderRadius: "6px", display: "inline-block" }}
@@ -112,13 +112,13 @@ export default function ThisIsForYouSection() {
 
         {/* Subheading */}
         <motion.p
-          className="text-[16px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-14"
+          className="text-[18px] text-[#888] text-center max-w-[480px] mx-auto leading-relaxed mb-14"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          Even if you&apos;ve been out of education for years, you may still qualify for full government funding.
+          It doesn’t matter how long it’s been since you last studied, you may still be eligible for full funding.
         </motion.p>
 
         {/* Three-column layout — image column is now fixed at 360px / 420px */}
@@ -127,7 +127,7 @@ export default function ThisIsForYouSection() {
           {/* Left */}
           <div className="w-full flex flex-col gap-4 order-2 md:order-1">
             <motion.p
-              className="text-[12px] font-bold uppercase tracking-widest text-[#bbb] mb-1"
+              className="text-[14px] font-bold uppercase tracking-widest text-[#bbb] mb-1"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -161,30 +161,13 @@ export default function ThisIsForYouSection() {
               />
 
               {/* Floating badge */}
-              <motion.div
-                className="absolute bottom-5 left-1/2 -translate-x-1/2 w-[85%] bg-white border border-[#ebebeb] rounded-[14px] px-4 py-3 flex items-center gap-3 shadow-[0_8px_28px_rgba(0,0,0,0.10)]"
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.5, ease: EASE }}
-              >
-                <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#D6FD70", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#000" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 8.5l3 3 7-7" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-[13px] font-bold text-[#0a0a0a] leading-none">No age limit</p>
-                  <p className="text-[12px] text-[#999] mt-[3px]">Tuition loans available at any age</p>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
 
           {/* Right */}
           <div className="w-full flex flex-col gap-4 order-3">
             <motion.p
-              className="text-[12px] font-bold uppercase tracking-widest text-[#bbb] mb-1"
+              className="text-[14px] font-bold uppercase tracking-widest text-[#bbb] mb-1"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
