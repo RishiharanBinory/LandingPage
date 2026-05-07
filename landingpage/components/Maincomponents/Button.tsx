@@ -29,29 +29,35 @@ export default function EligibilityButton({
         gap: "12px",
         padding: "8px 8px 8px 28px",
         borderRadius: "9999px",
-        border: `2.5px solid ${hovered ? "#D6FD70" : "transparent"}`,
-        outline: "none",
+        background: "#D6FD70",
         cursor: "pointer",
         overflow: "hidden",
-        backgroundColor: "#D6FD70",
-        transition: "border-color 0.3s ease",
+        outline: "none",
+        // Border: transparent → lime, kicks in AFTER fill completes
+        border: "2.5px solid transparent",
+        transition: hovered
+          ? "border-color 0.18s ease 0.38s"
+          : "border-color 0.18s ease 0s",
+        borderColor: hovered ? "#D6FD70" : "transparent",
       }}
     >
-      {/* Black circle — expands from arrow circle center */}
+      {/* Expanding black circle from arrow position */}
       <span
         style={{
           position: "absolute",
+          width: "44px",
+          height: "44px",
+          borderRadius: "9999px",
+          background: "#000",
           right: "8px",
           top: "50%",
-          width: "46px",
-          height: "46px",
-          borderRadius: "9999px",
-          backgroundColor: "#000000",
           transform: hovered
-            ? "translate(50%, -50%) scale(20)"
-            : "translate(50%, -50%) scale(0)",
+            ? "translate(0, -50%) scale(12)"
+            : "translate(0, -50%) scale(0)",
           transformOrigin: "center center",
-          transition: "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+          transition: "transform 0.55s cubic-bezier(0.76, 0, 0.24, 1)",
+          willChange: "transform",
+          zIndex: 1,
         }}
       />
 
@@ -59,14 +65,16 @@ export default function EligibilityButton({
       <span
         style={{
           position: "relative",
-          zIndex: 1,
+          zIndex: 3,
           fontFamily: "var(--font-libre-caslon), serif",
           fontSize: "16px",
-          fontWeight: 600,
-          letterSpacing: "0.06em",
+          fontWeight: 700,
+          letterSpacing: "0.07em",
           textTransform: "uppercase",
-          color: hovered ? "#ffffff" : "#000000",
-          transition: "color 0.25s ease 0.05s",
+          color: hovered ? "#fff" : "#000",
+          transition: hovered
+            ? "color 0.15s ease 0.1s"
+            : "color 0.15s ease 0.28s",
           whiteSpace: "nowrap",
         }}
       >
@@ -77,20 +85,23 @@ export default function EligibilityButton({
       <span
         style={{
           position: "relative",
-          zIndex: 1,
+          zIndex: 4,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          width: "42px",
-          height: "42px",
+          width: "44px",
+          height: "44px",
           borderRadius: "9999px",
-          backgroundColor: "#000000",
+          background: hovered ? "#D6FD70" : "#000",
           flexShrink: 0,
-          transition: "transform 0.3s ease",
+          transition: "transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1)",
           transform: hovered ? "rotate(45deg)" : "rotate(0deg)",
         }}
       >
-        <ArrowUpRight size={18} style={{ color: "#D6FD70" }} />
+        <ArrowUpRight
+          size={18}
+          style={{ color: hovered ? "#000" : "#D6FD70" }}
+        />
       </span>
     </button>
   );

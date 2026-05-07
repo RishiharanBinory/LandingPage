@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import EligibilityButton from "../Maincomponents/Button";
+import Link from "next/link";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -96,7 +97,10 @@ export default function CTASection() {
             transition={{ duration: 0.5, ease: EASE, delay: 0.18 }}
             className="flex flex-col items-start gap-4"
           >
+            <Link href="/eligibility-checker">
             <EligibilityButton label="Check My Eligibility" />
+            </Link>
+            
 
             {/* Microcopy */}
             <p className="text-[13px] flex items-center gap-3" style={{ color: "rgba(255,255,255,0.45)" }}>

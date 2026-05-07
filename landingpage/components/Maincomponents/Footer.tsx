@@ -124,7 +124,7 @@ export default function Footer() {
 
           {/* ── Bottom bar ── */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-6 text-[13px] text-white/30">
-            <p>© {new Date().getFullYear()} PrimeLeed. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Eligiby. All rights reserved.</p>
             <p>Aligned with Student Finance England guidelines.</p>
           </div>
         </div>

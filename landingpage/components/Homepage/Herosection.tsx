@@ -80,7 +80,7 @@ export default function HeroSection() {
               margin: "0 auto",
             }}
           >
-            Check If You Qualify for Student Finance in the UK{" "}
+            Check If You Qualify for Student Finance in the UK{" "}<br/>
             <span style={{ color: "#D6FD70" }}>In 60 Seconds</span>
           </motion.h1>
 
