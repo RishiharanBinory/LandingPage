@@ -29,14 +29,14 @@ const cards: Card[] = [
     id: "tuition",
     icon: <Banknote size={20} stroke="#000" strokeWidth={2} />,
     label: "Tuition Fee Loan",
-    description: "You don’t pay anything until you’re earning above the threshold, and the loan is written off after 40 years.",
+    description: "up to £9,535/year , paid directly to your university",
     image: "/img1.png",
   },
   {
     id: "maintenance",
     icon: <Home size={20} stroke="#000" strokeWidth={2} />,
     label: "Maintenance Loan",
-    description: "Up to £13,762/year — paid directly to you",
+    description: "Up to £13,762/year , paid directly to you",
     image: "/img2.png",
   },
   {
@@ -124,9 +124,9 @@ export default function StudentFinanceSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.55, duration: 0.5 }}
         >
-          Repayments only start once you earn over the threshold —{" "}
+          You don’t pay anything until you’re earning above the threshold,{" "}
           <span className="text-[#0a0a0a] font-bold">
-            and are written off after 40 years.
+             and the loan is written off after 40 years.
           </span>
         </motion.p>
       </div>

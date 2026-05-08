@@ -92,7 +92,7 @@ export default function HeroSection() {
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
               fontWeight: 400,
-              fontSize: "clamp(14px, 2vw, 18px)",
+              fontSize: "clamp(14px, 2vw, 20px)",
               lineHeight: 1.55,
               color: "#ffffff",
               textAlign: "center",

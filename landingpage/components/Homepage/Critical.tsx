@@ -36,9 +36,6 @@ export default function MisconceptionsSection() {
       style={{ fontFamily: "var(--font-plus-jakarta)" }}
     >
       <div className="max-w-[1100px] mx-auto flex flex-col items-center">
-
-      
-
         {/* ── Heading ── */}
         <motion.h2
           className="text-[32px] md:text-[48px] font-extrabold leading-[1.12] tracking-tight text-[#0a0a0a] text-center max-w-[680px] mx-auto mb-4"
@@ -47,15 +44,17 @@ export default function MisconceptionsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          Still thinking university isn’t for you? {" "}
+          Still thinking university isn’t for you?{" "}
           <span
             className="italic"
             style={{
               background: "#D6FD70",
               color: "#0a0a0a",
-              padding: "0 10px 2px",
+              padding: "2px 10px 3px",
               borderRadius: "6px",
               display: "inline-block",
+              verticalAlign: "bottom",
+              marginTop: "6px",
             }}
           >
             Think again.
@@ -70,16 +69,26 @@ export default function MisconceptionsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          Many people in London miss out on student funding because they believe they’re not eligible.
+          Many people in London miss out on student funding because they believe
+          they’re not eligible.
         </motion.p>
 
         {/* ── Grid ── */}
         <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-5 md:gap-6 items-center justify-items-center px-2 md:px-0">
-
           {/* Left column */}
           <div className="w-full flex flex-col gap-5 order-2 md:order-1">
-            <Card index={0} myth={misconceptions[0].myth} truth={misconceptions[0].truth} icon={misconceptions[0].icon} />
-            <Card index={2} myth={misconceptions[2].myth} truth={misconceptions[2].truth} icon={misconceptions[2].icon} />
+            <Card
+              index={0}
+              myth={misconceptions[0].myth}
+              truth={misconceptions[0].truth}
+              icon={misconceptions[0].icon}
+            />
+            <Card
+              index={2}
+              myth={misconceptions[2].myth}
+              truth={misconceptions[2].truth}
+              icon={misconceptions[2].icon}
+            />
           </div>
 
           {/* Centre image */}
@@ -110,11 +119,20 @@ export default function MisconceptionsSection() {
 
           {/* Right column */}
           <div className="w-full flex flex-col gap-5 order-3">
-            <Card index={1} myth={misconceptions[1].myth} truth={misconceptions[1].truth} icon={misconceptions[1].icon} />
-            <Card index={3} myth={misconceptions[3].myth} truth={misconceptions[3].truth} icon={misconceptions[3].icon} />
+            <Card
+              index={1}
+              myth={misconceptions[1].myth}
+              truth={misconceptions[1].truth}
+              icon={misconceptions[1].icon}
+            />
+            <Card
+              index={3}
+              myth={misconceptions[3].myth}
+              truth={misconceptions[3].truth}
+              icon={misconceptions[3].icon}
+            />
           </div>
         </div>
-
       </div>
     </section>
   );
@@ -185,7 +203,9 @@ function Card({
             <path d="M2 5.2l2 2 4-4" />
           </svg>
         </div>
-        <p className="text-[15px] font-bold text-[#0a0a0a] leading-snug">{truth}</p>
+        <p className="text-[15px] font-bold text-[#0a0a0a] leading-snug">
+          {truth}
+        </p>
       </div>
     </motion.div>
   );

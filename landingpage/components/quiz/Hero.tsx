@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Transition, Easing } from "framer-motion";
+import type { Transition } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import EligibilityButton from "../Maincomponents/Button";
 
-// ── EmailJS Config (hardcoded for testing) ────────────────────────────────────
+// ── EmailJS Config ────────────────────────────────────────────────────────────
 const EMAILJS_SERVICE_ID = "service_1w4omvf";
 const EMAILJS_PUBLIC_KEY = "1Ne-KtqqhvGNb_0i_";
 const EMAILJS_USER_TEMPLATE_ID = "template_4a9shi8";
@@ -159,7 +159,7 @@ const QUESTIONS: Question[] = [
     question: "Have you previously received a student funding loan?",
     sub: "This includes any tuition fee loan or maintenance loan you have received in prior years.",
     options: [
-      { label: "No — I have never received a student loan",next: "ELIGIBLE" },
+      { label: "No — I have never received a student loan", next: "ELIGIBLE" },
       { label: "1 year", next: "ELIGIBLE" },
       { label: "2 years", next: "ELIGIBLE" },
       { label: "3 years", next: "ELIGIBLE" },
@@ -168,17 +168,22 @@ const QUESTIONS: Question[] = [
   },
 ];
 
-const TOTAL_STEPS = 5;
+// ── Progress: each question gets an explicit step (1-based, out of TOTAL_STEPS)
+// TOTAL_STEPS = total number of quiz questions the user will answer in the longest path
+const TOTAL_STEPS = 3;
+
+// Map question id → which step number it represents (1 = first question shown)
 const STEP_MAP: Record<string, number> = {
   q1: 1,
   q2: 2,
   q2_eu: 2,
   q2_settled: 3,
   q1_other: 2,
-  q1_long_residence: 2,
+  q1_long_residence: 3,
   q1_ilr_residency: 3,
-  q_funding: 4,
+  q_funding: 3,
 };
+
 const SECTIONS = [
   { num: 1, label: "Nationality" },
   { num: 2, label: "Residency" },
@@ -187,7 +192,12 @@ const SECTIONS = [
 
 // ── Progress Bar ──────────────────────────────────────────────────────────────
 function ProgressBar({ current, total }: { current: number; total: number }) {
-  const pct = Math.round((current / total) * 100);
+  // current is the step being answered (1-indexed). Show progress as completion of previous steps.
+  // When on step 1: 0% (nothing done yet)
+  // When on step 2: 33% (step 1 done)
+  // When on step 3: 66% (steps 1-2 done)
+  // When result shown: 100% (all done)
+  const pct = Math.round(((current - 1) / total) * 100);
   return (
     <div className="flex items-center gap-3 w-full">
       <div className="flex-1 h-[4px] rounded-full overflow-hidden" style={{ background: "#e8e8e8" }}>
@@ -201,6 +211,26 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
       </div>
       <span className="text-[13px] font-bold shrink-0" style={{ color: "#0a0a0a", minWidth: "36px", textAlign: "right" }}>
         {pct}%
+      </span>
+    </div>
+  );
+}
+
+// ── Complete Progress Bar (100%) for result screens ───────────────────────────
+function ProgressBarComplete() {
+  return (
+    <div className="flex items-center gap-3 w-full">
+      <div className="flex-1 h-[4px] rounded-full overflow-hidden" style={{ background: "#e8e8e8" }}>
+        <motion.div
+          className="h-full rounded-full"
+          initial={{ width: "66%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 0.6, ease: EASE }}
+          style={{ background: "#D6FD70" }}
+        />
+      </div>
+      <span className="text-[13px] font-bold shrink-0" style={{ color: "#0a0a0a", minWidth: "36px", textAlign: "right" }}>
+        100%
       </span>
     </div>
   );
@@ -367,6 +397,248 @@ function NotEligibleScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
+// ── Answer Review Screen ──────────────────────────────────────────────────────
+interface AnswerReviewScreenProps {
+  answers: Record<string, string>;
+  onUnlock: () => void;
+  onBack: () => void;
+}
+
+function AnswerReviewScreen({ answers, onUnlock, onBack }: AnswerReviewScreenProps) {
+  const answerEntries = Object.entries(answers);
+
+  // Short readable labels for each question
+  const SHORT_LABELS: Record<string, string> = {
+    "What is your nationality or current immigration status?": "Nationality / Status",
+    "Have you been living in the UK for the past 3 years?": "UK Residency (3+ years)",
+    "What is your EU Settlement Scheme status?": "EU Settlement Status",
+    "Which of these best describes your current status?": "Immigration Status",
+    "Which long residence condition applies to you?": "Long Residence Condition",
+    "Have you previously received a student funding loan?": "Prior Student Loan",
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: EASE }}
+      className="flex flex-col gap-0 max-w-xl mx-auto w-full"
+    >
+      {/* Header badge */}
+      <div className="flex items-center gap-2 mb-5">
+        <div
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+          style={{ background: "#D6FD70" }}
+        >
+          <div
+            className="flex items-center justify-center shrink-0"
+            style={{
+              width: "18px",
+              height: "18px",
+              borderRadius: "50%",
+              background: "#0a0a0a",
+            }}
+          >
+            <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="#D6FD70" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 6.2l2 2 4-4" />
+            </svg>
+          </div>
+          <span className="text-[14px] font-bold uppercase tracking-widest" style={{ color: "#0a0a0a" }}>
+            Quiz Complete
+          </span>
+        </div>
+      </div>
+
+      {/* Heading */}
+      <motion.h1
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.12, duration: 0.5, ease: EASE }}
+        className="text-[28px] md:text-[38px] font-extrabold text-[#0a0a0a] leading-[1.1] tracking-tight mb-2"
+      >
+        Your answers are ready.
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.4, ease: EASE }}
+        className="text-[15px] leading-relaxed mb-8"
+        style={{ color: "#777" }}
+      >
+        Here&apos;s a summary of what you told us. Everything looks good — unlock your result to find out if you&apos;re eligible.
+      </motion.p>
+
+      {/* Q&A Summary Cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.28, duration: 0.45, ease: EASE }}
+        className="flex flex-col gap-2 mb-8"
+      >
+        {answerEntries.map(([question, answer], i) => (
+          <motion.div
+            key={question}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 + i * 0.06, duration: 0.32, ease: EASE }}
+            className="flex items-start justify-between gap-4"
+            style={{
+              background: "#fafafa",
+              border: "1.5px solid #ebebeb",
+              borderRadius: "16px",
+              padding: "14px 18px",
+            }}
+          >
+            <div className="flex items-start gap-3 flex-1 min-w-0">
+              {/* Step dot */}
+              <div
+                className="flex items-center justify-center shrink-0 mt-0.5"
+                style={{
+                  width: "22px",
+                  height: "22px",
+                  borderRadius: "50%",
+                  background: "#0a0a0a",
+                }}
+              >
+                <span style={{ fontSize: "9px", fontWeight: 800, color: "#D6FD70" }}>{i + 1}</span>
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[11px] font-bold uppercase tracking-widest mb-0.5" style={{ color: "#bbb" }}>
+                  {SHORT_LABELS[question] ?? `Question ${i + 1}`}
+                </span>
+                <span className="text-[14px] font-semibold leading-snug" style={{ color: "#0a0a0a" }}>
+                  {answer}
+                </span>
+              </div>
+            </div>
+            {/* Checkmark */}
+            <div
+              className="shrink-0 flex items-center justify-center mt-0.5"
+              style={{
+                width: "22px",
+                height: "22px",
+                borderRadius: "50%",
+                background: "#D6FD70",
+              }}
+            >
+              <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 6.2l2 2 4-4" />
+              </svg>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Lock / Unlock CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.42, ease: EASE }}
+        className="w-full rounded-2xl overflow-hidden mb-6"
+        style={{
+          background: "#0a0a0a",
+          border: "1.5px solid #0a0a0a",
+        }}
+      >
+        {/* Blurred result teaser */}
+        <div
+          className="flex items-center justify-between px-5 py-4"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <div className="flex flex-col gap-1">
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Your Eligibility Result
+            </span>
+            {/* Blurred placeholder text */}
+            <div className="flex items-center gap-2 mt-1">
+              <div
+                style={{
+                  width: "140px",
+                  height: "18px",
+                  borderRadius: "6px",
+                  background: "rgba(255,255,255,0.12)",
+                  filter: "blur(6px)",
+                }}
+              />
+            </div>
+          </div>
+          {/* Lock icon */}
+          <div
+            className="flex items-center justify-center"
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.08)",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+          </div>
+        </div>
+
+        {/* CTA button */}
+        <button
+          onClick={onUnlock}
+          className="w-full flex items-center justify-between px-5 py-4 group"
+          style={{ background: "transparent", border: "none", cursor: "pointer" }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = "rgba(214,253,112,0.08)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="flex items-center justify-center shrink-0"
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                background: "#D6FD70",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+              </svg>
+            </div>
+            <div className="flex flex-col items-start">
+              <span className="text-[15px] font-bold" style={{ color: "#D6FD70" }}>
+                Unlock your result
+              </span>
+              <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.4)" }}>
+                Takes 30 seconds — completely free
+              </span>
+            </div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#D6FD70" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2.5 7h9M8.5 3.5L12 7l-3.5 3.5" />
+          </svg>
+        </button>
+      </motion.div>
+
+      {/* Back link */}
+      <button
+        onClick={onBack}
+        className="flex items-center gap-2 text-[13px] transition-colors self-start"
+        style={{ color: "#aaa" }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#0a0a0a")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#aaa")}
+      >
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11.5 7H2.5M6 3.5L2.5 7l3.5 3.5" />
+        </svg>
+        Review my answers
+      </button>
+    </motion.div>
+  );
+}
+
 // ── Lead Capture Screen ───────────────────────────────────────────────────────
 interface FormData {
   name: string;
@@ -413,7 +685,6 @@ function LeadCaptureScreen({ onBack, answers }: LeadCaptureScreenProps) {
         timeZone: "Europe/London",
       });
 
-      // ── 1. Auto-reply to user
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_USER_TEMPLATE_ID,
@@ -424,7 +695,6 @@ function LeadCaptureScreen({ onBack, answers }: LeadCaptureScreenProps) {
         EMAILJS_PUBLIC_KEY
       );
 
-      // ── 2. Lead notification to admin
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_ADMIN_TEMPLATE_ID,
@@ -463,10 +733,13 @@ function LeadCaptureScreen({ onBack, answers }: LeadCaptureScreenProps) {
       <div className="flex items-center gap-2 mb-5">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ background: "#0a0a0a" }}>
           <div className="flex items-center justify-center shrink-0" style={{ width: "18px", height: "18px", borderRadius: "50%", background: "#D6FD70" }}>
-            <span style={{ fontSize: "9px", fontWeight: 800, color: "#0a0a0a" }}>4</span>
+            <svg width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="5.5" width="8" height="5" rx="1" />
+              <path d="M4 5.5V4a2 2 0 0 1 3.9-.5" />
+            </svg>
           </div>
           <span className="text-[11px] font-bold uppercase tracking-widest text-white">
-            Almost There
+            Unlock Result
           </span>
         </div>
       </div>
@@ -477,7 +750,7 @@ function LeadCaptureScreen({ onBack, answers }: LeadCaptureScreenProps) {
         transition={{ delay: 0.12, duration: 0.5, ease: EASE }}
         className="text-[28px] md:text-[38px] font-extrabold text-[#0a0a0a] leading-[1.1] tracking-tight mb-2"
       >
-        Fill in your details to see your result.
+        One last step to see your result.
       </motion.h1>
 
       <motion.p
@@ -487,7 +760,7 @@ function LeadCaptureScreen({ onBack, answers }: LeadCaptureScreenProps) {
         className="text-[15px] leading-relaxed mb-8"
         style={{ color: "#777" }}
       >
-        You&apos;re one step away. Enter your details below and we&apos;ll send your eligibility result straight to your inbox — no account needed, completely free.
+        Enter your details below and we&apos;ll send your eligibility result straight to your inbox — no account needed, completely free.
       </motion.p>
 
       <div className="flex flex-col gap-4 mb-8">
@@ -567,38 +840,49 @@ function LeadCaptureScreen({ onBack, answers }: LeadCaptureScreenProps) {
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M11.5 7H2.5M6 3.5L2.5 7l3.5 3.5" />
         </svg>
-        Review my answers
+        Go back
       </button>
     </motion.div>
   );
 }
 
+// ── Screen States ─────────────────────────────────────────────────────────────
+type ScreenState = "quiz" | "not_eligible" | "review" | "form";
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function EligibilityQuizPage() {
   const [history, setHistory] = useState<string[]>(["q1"]);
   const [pointer, setPointer] = useState(0);
-  const [result, setResult] = useState<"ELIGIBLE" | "NOT_ELIGIBLE" | null>(null);
+  const [screen, setScreen] = useState<ScreenState>("quiz");
   const [direction, setDirection] = useState(1);
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
   const activeId = history[pointer];
   const activeCurrent = QUESTIONS.find((q) => q.id === activeId)!;
-  const activeStep = result
-    ? TOTAL_STEPS
-    : pointer === 0
-    ? 0
-    : STEP_MAP[history[pointer - 1]] ?? 1;
+
+  // Current step number (1-indexed) based on the active question id
+  const currentStep = STEP_MAP[activeId] ?? 1;
+
   const activeSection = activeCurrent?.sectionNum ?? 1;
 
-  const canGoBack = pointer > 0 || !!result;
-  const canGoForward = !result && pointer < history.length - 1;
+  const canGoBack =
+    (screen === "quiz" && pointer > 0) ||
+    screen === "not_eligible" ||
+    screen === "review" ||
+    screen === "form";
+
+  const canGoForward = screen === "quiz" && pointer < history.length - 1;
 
   function handleChoose(option: Option) {
     setDirection(1);
     setAnswers((prev) => ({ ...prev, [activeCurrent.question]: option.label }));
 
-    if (option.next === "ELIGIBLE" || option.next === "NOT_ELIGIBLE") {
-      setResult(option.next as "ELIGIBLE" | "NOT_ELIGIBLE");
+    if (option.next === "NOT_ELIGIBLE") {
+      setScreen("not_eligible");
+      return;
+    }
+    if (option.next === "ELIGIBLE") {
+      setScreen("review");
       return;
     }
 
@@ -609,8 +893,17 @@ export default function EligibilityQuizPage() {
 
   function handleBack() {
     setDirection(-1);
-    if (result) { setResult(null); return; }
-    if (pointer > 0) setPointer((p) => p - 1);
+    if (screen === "form") {
+      setScreen("review");
+      return;
+    }
+    if (screen === "review" || screen === "not_eligible") {
+      setScreen("quiz");
+      return;
+    }
+    if (screen === "quiz" && pointer > 0) {
+      setPointer((p) => p - 1);
+    }
   }
 
   function handleForward() {
@@ -618,15 +911,24 @@ export default function EligibilityQuizPage() {
     if (canGoForward) setPointer((p) => p + 1);
   }
 
+  function handleUnlock() {
+    setScreen("form");
+  }
+
+  const showProgress = screen === "quiz";
+  const showCompleteProgress = screen === "review" || screen === "form" || screen === "not_eligible";
+
   return (
     <div className="min-h-screen bg-white flex flex-col" style={{ fontFamily: "var(--font-plus-jakarta), sans-serif" }}>
-      {!result && (
+      {/* Progress bar area */}
+      {(showProgress || showCompleteProgress) && (
         <div className="shrink-0 px-4 md:px-10 pt-5 pb-1">
+          {/* Section indicators */}
           <div className="relative flex items-center justify-center mb-3 min-h-[32px]">
             <div className="hidden lg:flex items-center gap-0.5 absolute left-1/2 -translate-x-1/2">
               {SECTIONS.map((s, i) => {
-                const done = s.num < activeSection;
-                const active = s.num === activeSection;
+                const done = showCompleteProgress || s.num < activeSection;
+                const active = showProgress && s.num === activeSection;
                 return (
                   <div key={s.num} className="flex items-center">
                     <div
@@ -647,7 +949,7 @@ export default function EligibilityQuizPage() {
                           <span style={{ fontSize: "8px", fontWeight: 700, color: active ? "#0a0a0a" : "#bbb" }}>{s.num}</span>
                         )}
                       </motion.div>
-                      <span className="text-[11px] font-semibold transition-colors" style={{ color: active ? "white" : done ? "#0a0a0a" : "#bbb" }}>
+                      <span className="text-[14px] font-semibold transition-colors" style={{ color: active ? "white" : done ? "#0a0a0a" : "#bbb" }}>
                         {s.label}
                       </span>
                     </div>
@@ -661,8 +963,8 @@ export default function EligibilityQuizPage() {
 
             <div className="flex lg:hidden items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
               {SECTIONS.map((s) => {
-                const done = s.num < activeSection;
-                const active = s.num === activeSection;
+                const done = showCompleteProgress || s.num < activeSection;
+                const active = showProgress && s.num === activeSection;
                 return (
                   <motion.div
                     key={s.num}
@@ -674,15 +976,28 @@ export default function EligibilityQuizPage() {
               })}
             </div>
           </div>
-          <ProgressBar current={activeStep} total={TOTAL_STEPS} />
+
+          {/* Progress bar */}
+          {showCompleteProgress ? (
+            <ProgressBarComplete />
+          ) : (
+            <ProgressBar current={currentStep} total={TOTAL_STEPS} />
+          )}
         </div>
       )}
 
       <main className="flex-1 w-full max-w-2xl mx-auto px-5 md:px-8 py-10 md:py-14 flex flex-col">
         <AnimatePresence mode="wait" custom={direction}>
-          {result === "NOT_ELIGIBLE" ? (
+          {screen === "not_eligible" ? (
             <NotEligibleScreen key="not-eligible" onBack={handleBack} />
-          ) : result === "ELIGIBLE" ? (
+          ) : screen === "review" ? (
+            <AnswerReviewScreen
+              key="review"
+              answers={answers}
+              onUnlock={handleUnlock}
+              onBack={handleBack}
+            />
+          ) : screen === "form" ? (
             <LeadCaptureScreen key="lead-form" onBack={handleBack} answers={answers} />
           ) : (
             <motion.div
@@ -699,7 +1014,7 @@ export default function EligibilityQuizPage() {
                   <div className="flex items-center justify-center shrink-0" style={{ width: "18px", height: "18px", borderRadius: "50%", background: "#D6FD70" }}>
                     <span style={{ fontSize: "9px", fontWeight: 800, color: "#0a0a0a" }}>{activeCurrent.sectionNum}</span>
                   </div>
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-white">{activeCurrent.sectionLabel}</span>
+                  <span className="text-[16px] font-bold uppercase tracking-widest text-white">{activeCurrent.sectionLabel}</span>
                 </div>
               </div>
 
@@ -707,7 +1022,7 @@ export default function EligibilityQuizPage() {
                 {activeCurrent.question}
               </h1>
               {activeCurrent.sub ? (
-                <p className="text-[14px] leading-relaxed mb-8" style={{ color: "#888" }}>{activeCurrent.sub}</p>
+                <p className="text-[16px] leading-relaxed mb-8" style={{ color: "#888" }}>{activeCurrent.sub}</p>
               ) : (
                 <div className="mb-8" />
               )}
@@ -761,7 +1076,7 @@ export default function EligibilityQuizPage() {
           )}
         </AnimatePresence>
 
-        {!result && (
+        {screen === "quiz" && (
           <div className="mt-10 flex flex-wrap gap-5 justify-center">
             {["Free to use", "No documents needed at this stage", "Takes under 60 seconds"].map((t) => (
               <span key={t} className="flex items-center gap-1.5 font-semibold" style={{ color: "#555", fontSize: "14px" }}>

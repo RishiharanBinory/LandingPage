@@ -44,7 +44,7 @@ export default function RepaymentsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          Worried about repayments?
+         Worried about taking a loan?
         </motion.h2>
 
         {/* Sub */}
