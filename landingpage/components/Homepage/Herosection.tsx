@@ -16,7 +16,7 @@ export default function HeroSection() {
       <div
         className="relative w-full max-w-[1900px] mx-auto"
         style={{
-          borderRadius: "28px",
+          borderRadius: "0 0 28px 28px",
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
