@@ -19,29 +19,23 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
-
       if (currentY <= 10) {
-        // Always show at the very top
         setVisible(true);
       } else if (currentY > lastScrollY.current) {
-        // Scrolling down — hide
         setVisible(false);
-        setOpen(false); // close mobile menu when hiding
+        setOpen(false);
       } else {
-        // Scrolling up — show
         setVisible(true);
       }
-
       lastScrollY.current = currentY;
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
-      {/* Tiny white clip div */}
+      {/* White clip strip at very top */}
       <div
         style={{
           position: "fixed",
@@ -56,7 +50,7 @@ export default function Navbar() {
         }}
       />
 
-      {/* Full-width fixed navbar container */}
+      {/* Outer wrapper */}
       <div
         style={{
           position: "fixed",
@@ -72,7 +66,7 @@ export default function Navbar() {
           transition: "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        {/* Corner image — top left, desktop only */}
+        {/* Corner decorations — desktop only */}
         <Image
           src="/image.png"
           alt=""
@@ -88,8 +82,6 @@ export default function Navbar() {
             userSelect: "none",
           }}
         />
-
-        {/* Corner image — top right, desktop only */}
         <Image
           src="/image.png"
           alt=""
@@ -107,134 +99,152 @@ export default function Navbar() {
           }}
         />
 
-        {/* Mobile: 60vw | Desktop: original sizing */}
-        <nav
+        {/* ── Nav pill + dropdown unified container ── */}
+        <div
           className="w-[60vw] md:w-[min(760px,calc(100%-48px))]"
           style={{
             pointerEvents: "auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            height: "62px",
-            borderRadius: "0 0 20px 20px",
-            background: "#ffffff",
-            boxShadow: "0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)",
-            border: "1px solid rgba(0,0,0,0.06)",
-            borderTop: "none",
-            padding: "0 12px 0 20px",
+            position: "relative",
           }}
         >
-          <Link
-            href="/"
+          {/* Nav bar */}
+          <nav
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "10px",
-              textDecoration: "none",
-              flexShrink: 0,
+              justifyContent: "space-between",
+              height: "62px",
+              // When open on mobile: square bottom corners so it merges with dropdown
+              borderRadius: open ? "20px 20px 0 0" : "0 0 20px 20px",
+              background: "#ffffff",
+              boxShadow: open
+                ? "0 0 0 rgba(0,0,0,0)"           // no shadow when open — unified block
+                : "0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)",
+              border: "1px solid rgba(0,0,0,0.06)",
+              borderTop: "none",
+              borderBottom: open ? "1px solid rgba(0,0,0,0.06)" : "1px solid rgba(0,0,0,0.06)",
+              padding: "0 12px 0 20px",
+              transition: "border-radius 0.2s ease, box-shadow 0.2s ease",
+              position: "relative",
+              zIndex: 2,
             }}
           >
-            <div
+            {/* Logo */}
+            <Link
+              href="/"
               style={{
-                width: 34,
-                height: 34,
-                borderRadius: "10px",
-                background: "#0a0a0a",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
+                gap: "10px",
+                textDecoration: "none",
                 flexShrink: 0,
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
-                <path d="M3 14L9 4l6 10H3z" fill="#D6FD70" />
-              </svg>
-            </div>
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 800,
-                color: "#0a0a0a",
-                letterSpacing: "-0.3px",
-              }}
-            >
-              Eligiby
-            </span>
-          </Link>
-
-          <div className="hidden md:flex" style={{ alignItems: "center", gap: "2px" }}>
-            {links.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
+              <div
                 style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "rgba(10,10,10,0.65)",
-                  textDecoration: "none",
-                  padding: "6px 16px",
-                  borderRadius: "999px",
-                  transition: "background 0.15s, color 0.15s",
-                  letterSpacing: "0.01em",
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={e => {
-                  (e.target as HTMLElement).style.background = "rgba(0,0,0,0.05)";
-                  (e.target as HTMLElement).style.color = "#0a0a0a";
-                }}
-                onMouseLeave={e => {
-                  (e.target as HTMLElement).style.background = "transparent";
-                  (e.target as HTMLElement).style.color = "rgba(10,10,10,0.65)";
+                  width: 34,
+                  height: 34,
+                  borderRadius: "10px",
+                  background: "#0a0a0a",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
                 }}
               >
-                {link.label}
-              </Link>
-            ))}
-          </div>
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+                  <path d="M3 14L9 4l6 10H3z" fill="#D6FD70" />
+                </svg>
+              </div>
+              <span
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  color: "#0a0a0a",
+                  letterSpacing: "-0.3px",
+                }}
+              >
+                Eligiby
+              </span>
+            </Link>
 
-          <div className="hidden md:block" style={{ width: "120px" }} />
+            {/* Desktop links */}
+            <div className="hidden md:flex" style={{ alignItems: "center", gap: "2px" }}>
+              {links.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "rgba(10,10,10,0.65)",
+                    textDecoration: "none",
+                    padding: "6px 16px",
+                    borderRadius: "999px",
+                    transition: "background 0.15s, color 0.15s",
+                    letterSpacing: "0.01em",
+                    whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.background = "rgba(0,0,0,0.05)";
+                    (e.target as HTMLElement).style.color = "#0a0a0a";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.background = "transparent";
+                    (e.target as HTMLElement).style.color = "rgba(10,10,10,0.65)";
+                  }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
-          <button
-            className="flex md:hidden"
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: "10px",
-              background: "#0a0a0a",
-              border: "none",
-              cursor: "pointer",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#ffffff",
-              flexShrink: 0,
-            }}
-          >
-            {open ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </nav>
+            <div className="hidden md:block" style={{ width: "120px" }} />
 
-        {/* Mobile dropdown — matches 60vw nav */}
-        {open && (
+            {/* Hamburger — mobile only */}
+            <button
+              className="flex md:hidden"
+              onClick={() => setOpen(!open)}
+              aria-label="Toggle menu"
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: "10px",
+                background: "#0a0a0a",
+                border: "none",
+                cursor: "pointer",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ffffff",
+                flexShrink: 0,
+                transition: "opacity 0.15s ease",
+              }}
+            >
+              {open ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </nav>
+
+          {/* Mobile dropdown — sits directly below nav, shares the same container width */}
           <div
             className="md:hidden"
             style={{
-              pointerEvents: "auto",
-              position: "fixed",
-              top: "62px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "60vw",
-              borderRadius: "0 0 20px 20px",
-              background: "#ffffff",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.10)",
-              borderTop: "1px solid rgba(0,0,0,0.06)",
               overflow: "hidden",
+              maxHeight: open ? "300px" : "0px",
+              transition: "max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              background: "#ffffff",
+              borderRadius: "0 0 20px 20px",
+              // Only show side + bottom border, top handled by nav border-bottom
+              boxShadow: open
+                ? "0 8px 32px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.05)"
+                : "none",
+              border: open ? "1px solid rgba(0,0,0,0.06)" : "none",
+              borderTop: "none",
+              position: "relative",
+              zIndex: 1,
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", padding: "8px 12px 16px" }}>
-              {links.map((link) => (
+            <div style={{ display: "flex", flexDirection: "column", padding: "6px 12px 14px" }}>
+              {links.map((link, i) => (
                 <Link
                   key={link.label}
                   href={link.href}
@@ -244,15 +254,17 @@ export default function Navbar() {
                     fontWeight: 500,
                     color: "#0a0a0a",
                     textDecoration: "none",
-                    padding: "12px 16px",
+                    padding: "13px 16px",
                     borderRadius: "12px",
                     transition: "background 0.15s",
+                    borderBottom:
+                      i < links.length - 1 ? "1px solid rgba(0,0,0,0.05)" : "none",
                   }}
-                  onMouseEnter={e => {
-                    (e.target as HTMLElement).style.background = "rgba(0,0,0,0.04)";
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(0,0,0,0.04)";
                   }}
-                  onMouseLeave={e => {
-                    (e.target as HTMLElement).style.background = "transparent";
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = "transparent";
                   }}
                 >
                   {link.label}
@@ -260,7 +272,7 @@ export default function Navbar() {
               ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </>
   );

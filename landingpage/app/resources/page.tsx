@@ -1,25 +1,20 @@
 // app/resources/page.tsx
-// ─────────────────────────────────────────────────────────────────
-// Blog listing page — shows hero + all blog cards + newsletter.
-// Card layout matches the reference screenshots.
-// ─────────────────────────────────────────────────────────────────
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Clock, Calendar } from "lucide-react";
 import { blogPosts, type BlogPost } from "../types/blog";
 import { ExploreCategories } from "@/components/Blogs/ExploreCategories";
 import NewsletterCard from "@/components/Maincomponents/NewsletterCard";
-// ─── Brand tokens ─────────────────────────────────────────────────
+
 const LIME = "#D6FD70";
 const BLACK = "#0a0a0a";
 const WHITE = "#ffffff";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// ─── Image with placeholder fallback ─────────────────────────────
 function BlogImage({
   src,
   alt,
@@ -85,8 +80,6 @@ function BlogImage({
   );
 }
 
-// ─── Featured card (large, side-by-side) ─────────────────────────
-// Matches the reference: big image left, content right, "Read more →"
 function FeaturedCard({ post }: { post: BlogPost }) {
   const [hovered, setHovered] = useState(false);
 
@@ -114,7 +107,6 @@ function FeaturedCard({ post }: { post: BlogPost }) {
             cursor: "pointer",
           }}
         >
-          {/* Image */}
           <BlogImage
             src={`/blog/${post.image}`}
             alt={post.title}
@@ -124,8 +116,6 @@ function FeaturedCard({ post }: { post: BlogPost }) {
               transition: "transform 0.55s ease",
             }}
           />
-
-          {/* Content */}
           <div
             style={{
               padding: "48px",
@@ -135,10 +125,7 @@ function FeaturedCard({ post }: { post: BlogPost }) {
             }}
           >
             <div>
-              {/* Pills */}
-              <div
-                style={{ display: "flex", gap: "8px", marginBottom: "24px" }}
-              >
+              <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
                 <span
                   style={{
                     background: LIME,
@@ -168,8 +155,6 @@ function FeaturedCard({ post }: { post: BlogPost }) {
                   {post.category}
                 </span>
               </div>
-
-              {/* Title */}
               <h2
                 style={{
                   fontSize: "clamp(20px, 2.2vw, 30px)",
@@ -182,8 +167,6 @@ function FeaturedCard({ post }: { post: BlogPost }) {
               >
                 {post.title}
               </h2>
-
-              {/* Excerpt */}
               <p
                 style={{
                   fontSize: "15px",
@@ -195,8 +178,6 @@ function FeaturedCard({ post }: { post: BlogPost }) {
                 {post.excerpt}
               </p>
             </div>
-
-            {/* Meta + CTA */}
             <div
               style={{
                 display: "flex",
@@ -206,7 +187,6 @@ function FeaturedCard({ post }: { post: BlogPost }) {
                 gap: "14px",
               }}
             >
-              {/* Meta */}
               <div
                 style={{
                   display: "flex",
@@ -227,8 +207,6 @@ function FeaturedCard({ post }: { post: BlogPost }) {
                   {post.readTime}
                 </span>
               </div>
-
-              {/* Read more button */}
               <button
                 style={{
                   display: "inline-flex",
@@ -258,8 +236,6 @@ function FeaturedCard({ post }: { post: BlogPost }) {
   );
 }
 
-// ─── Standard blog card ───────────────────────────────────────────
-// Matches screenshot: image top, title, date + readTime, "Read more →"
 function BlogCard({ post, index }: { post: BlogPost; index: number }) {
   const [hovered, setHovered] = useState(false);
 
@@ -279,8 +255,7 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
             overflow: "hidden",
             background: WHITE,
             border: `2px solid ${hovered ? LIME : "rgba(0,0,0,0.07)"}`,
-            transition:
-              "border-color 0.25s ease, transform 0.28s ease, box-shadow 0.28s ease",
+            transition: "border-color 0.25s ease, transform 0.28s ease, box-shadow 0.28s ease",
             transform: hovered ? "translateY(-5px)" : "translateY(0)",
             boxShadow: hovered
               ? "0 20px 48px rgba(0,0,0,0.11)"
@@ -290,7 +265,6 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
             flexDirection: "column",
           }}
         >
-          {/* Image */}
           <BlogImage
             src={`/blog/${post.image}`}
             alt={post.title}
@@ -301,10 +275,7 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
               transition: "transform 0.5s ease",
             }}
           />
-
-          {/* Content */}
           <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1 }}>
-            {/* Title */}
             <h3
               style={{
                 fontSize: "18px",
@@ -318,8 +289,6 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
             >
               {post.title}
             </h3>
-
-            {/* Meta row */}
             <div
               style={{
                 display: "flex",
@@ -350,8 +319,6 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
                 </span>
               </div>
             </div>
-
-            {/* Read more link — matches reference */}
             <div
               style={{
                 display: "inline-flex",
@@ -383,6 +350,15 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
 
 // ─── Hero Section ─────────────────────────────────────────────────
 function ResourcesHero() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const pills = [
     { label: "Student Finance", style: { left: "5%", top: "30%" } },
     { label: "Tuition Fees", style: { left: "9%", bottom: "30%" } },
@@ -430,31 +406,33 @@ function ResourcesHero() {
           pointerEvents: "none",
         }}
       />
-      {/* Floating pills */}
-      {pills.map((p, i) => (
-        <motion.div
-          key={p.label}
-          initial={{ opacity: 0, scale: 0.75 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.55, delay: 0.4 + i * 0.1, ease: EASE }}
-          style={{
-            position: "absolute",
-            background: "rgba(255,255,255,0.07)",
-            backdropFilter: "blur(10px)",
-            border: "1.5px solid rgba(255,255,255,0.12)",
-            borderRadius: "9999px",
-            padding: "11px 22px",
-            fontSize: "13px",
-            fontWeight: 600,
-            color: "rgba(255,255,255,0.7)",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            ...p.style,
-          }}
-        >
-          {p.label}
-        </motion.div>
-      ))}
+
+      {/* Floating pills — hidden on mobile */}
+      {!isMobile &&
+        pills.map((p, i) => (
+          <motion.div
+            key={p.label}
+            initial={{ opacity: 0, scale: 0.75 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.55, delay: 0.4 + i * 0.1, ease: EASE }}
+            style={{
+              position: "absolute",
+              background: "rgba(255,255,255,0.07)",
+              backdropFilter: "blur(10px)",
+              border: "1.5px solid rgba(255,255,255,0.12)",
+              borderRadius: "9999px",
+              padding: "11px 22px",
+              fontSize: "13px",
+              fontWeight: 600,
+              color: "rgba(255,255,255,0.7)",
+              whiteSpace: "nowrap",
+              pointerEvents: "none",
+              ...p.style,
+            }}
+          >
+            {p.label}
+          </motion.div>
+        ))}
 
       {/* Text */}
       <div style={{ position: "relative", textAlign: "center", maxWidth: "720px" }}>
@@ -553,7 +531,6 @@ export default function ResourcesPage() {
           padding: "80px 24px 100px",
         }}
       >
-        {/* Section label */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -585,14 +562,12 @@ export default function ResourcesPage() {
           </span>
         </motion.div>
 
-        {/* Featured */}
         {featuredPost && (
           <div style={{ marginBottom: "32px" }}>
             <FeaturedCard post={featuredPost} />
           </div>
         )}
 
-        {/* Grid */}
         {regularPosts.length > 0 && (
           <div
             style={{
@@ -607,9 +582,9 @@ export default function ResourcesPage() {
           </div>
         )}
       </section>
-      
+
       <ExploreCategories />
-      
+
     </main>
   );
 }
