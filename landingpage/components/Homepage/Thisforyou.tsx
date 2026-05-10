@@ -118,7 +118,7 @@ export default function ThisIsForYouSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          It doesn’t matter how long it’s been since you last studied, you may still be eligible for full funding.
+          It doesn&apos;t matter how long it&apos;s been since you last studied, you may still be eligible for full funding.
         </motion.p>
 
         {/* Three-column layout — image column is now fixed at 360px / 420px */}
@@ -140,9 +140,9 @@ export default function ThisIsForYouSection() {
             ))}
           </div>
 
-          {/* Centre image — fills the fixed column width */}
+          {/* Centre image */}
           <motion.div
-            className="w-full order-1 md:order-2 shrink-0"
+            className="order-1 md:order-2 shrink-0 w-[65%] md:w-full"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -159,8 +159,6 @@ export default function ThisIsForYouSection() {
                 className="object-cover object-top"
                 priority
               />
-
-              {/* Floating badge */}
             </div>
           </motion.div>
 

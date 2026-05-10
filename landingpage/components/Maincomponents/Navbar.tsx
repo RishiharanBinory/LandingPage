@@ -8,7 +8,7 @@ import { Menu, X } from "lucide-react";
 const links = [
   { label: "Home", href: "/" },
   { label: "Eligibility Checker", href: "/eligibility-checker" },
-  { label: "Blog", href: "/blog" },
+  { label: "Resources", href: "/resources" },
 ];
 
 export default function Navbar() {

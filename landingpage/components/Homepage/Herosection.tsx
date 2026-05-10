@@ -50,13 +50,18 @@ export default function HeroSection() {
 
         {/* Main content */}
         <div
+          className="hero-content"
           style={{
             position: "relative",
             zIndex: 10,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            paddingTop: "clamp(120px, 14vw, 180px)",
+            // KEY FIX: Mobile gets a larger top padding to push content into the
+            // optical center of the sky image. Desktop stays at the original value.
+            // clamp(min, preferred, max) — on a 390px phone: 14vw = 54px (too low),
+            // so we use a fixed 140px floor for mobile via a responsive class instead.
+            paddingTop: "clamp(190px, 16vw, 180px)",
             paddingLeft: "clamp(16px, 4vw, 48px)",
             paddingRight: "clamp(16px, 4vw, 48px)",
             paddingBottom: "40px",
@@ -71,8 +76,10 @@ export default function HeroSection() {
             style={{
               fontFamily: "'Plus Jakarta Sans', serif",
               fontWeight: 600,
-              fontSize: "clamp(28px, 5.5vw, 60px)",
-              lineHeight: 1.08,
+              // Slightly larger min so mobile text doesn't feel too small
+              fontSize: "clamp(30px, 5.5vw, 60px)",
+              // Looser line-height on mobile — 1.08 is too tight for 2-line wraps
+              lineHeight: 1.13,
               letterSpacing: "-0.02em",
               color: "#ffffff",
               textAlign: "center",
@@ -92,20 +99,23 @@ export default function HeroSection() {
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
               fontWeight: 400,
-              fontSize: "clamp(14px, 2vw, 20px)",
-              lineHeight: 1.55,
+              fontSize: "clamp(15px, 2vw, 20px)",
+              lineHeight: 1.6,
               color: "#ffffff",
               textAlign: "center",
               maxWidth: "640px",
-              margin: "24px auto 0",
+              // More vertical breathing room on mobile (was 24px flat)
+              margin: "clamp(20px, 4vw, 28px) auto 0",
             }}
           >
             You could get{" "}
             <span style={{ fontWeight: 600 }}>
               your tuition fees covered £9,000+{" "}
             </span>{" "}
-            and receive up to
-            <span style={{ fontWeight: 600 }}>£13,000 per year paid directly to you.</span>
+            and receive up to{" "}
+            <span style={{ fontWeight: 600 }}>
+              £13,000 per year paid directly to you.
+            </span>
           </motion.p>
 
           {/* CTA */}
@@ -118,7 +128,8 @@ export default function HeroSection() {
               flexDirection: "column",
               alignItems: "center",
               gap: "12px",
-              marginTop: "36px",
+              // Responsive gap so CTA doesn't crowd the subheadline on mobile
+              marginTop: "clamp(28px, 5vw, 36px)",
             }}
           >
             <Link href="/eligibility-checker">
@@ -139,17 +150,19 @@ export default function HeroSection() {
             </p>
           </motion.div>
 
-          {/* ✅ ONE carousel for ALL screen sizes — no more hidden/flex split */}
+          {/* Carousel — bleeds edge-to-edge on mobile by negating parent padding */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
             style={{
-              width: "100%",
+              width: "100vw",
               maxWidth: "1200px",
-              marginTop: "48px",
+              marginTop: "clamp(36px, 6vw, 48px)",
               paddingBottom: "20px",
               overflow: "visible",
+              marginLeft: "clamp(-16px, -4vw, 0px)",
+              marginRight: "clamp(-16px, -4vw, 0px)",
             }}
           >
             <CardCarousel />

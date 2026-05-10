@@ -38,13 +38,13 @@ export default function MisconceptionsSection() {
       <div className="max-w-[1100px] mx-auto flex flex-col items-center">
         {/* ── Heading ── */}
         <motion.h2
-          className="text-[32px] md:text-[48px] font-extrabold leading-[1.12] tracking-tight text-[#0a0a0a] text-center max-w-[680px] mx-auto mb-4"
+          className="text-[36px] md:text-[48px] font-extrabold leading-[1.12] tracking-tight text-[#0a0a0a] text-center max-w-[680px] mx-auto mb-4"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-          Still thinking university isn’t for you?{" "}
+          Still thinking university isn&apos;t for you?{" "}
           <span
             className="italic"
             style={{
@@ -63,14 +63,14 @@ export default function MisconceptionsSection() {
 
         {/* ── Subheading ── */}
         <motion.p
-          className="text-[18px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-14"
+          className="text-[19px] md:text-[18px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-14"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
           Many people in London miss out on student funding because they believe
-          they’re not eligible.
+          they&apos;re not eligible.
         </motion.p>
 
         {/* ── Grid ── */}
@@ -91,9 +91,9 @@ export default function MisconceptionsSection() {
             />
           </div>
 
-          {/* Centre image */}
+          {/* Centre image — smaller on mobile */}
           <motion.div
-            className="w-full md:w-[260px] lg:w-[300px] order-1 md:order-2 shrink-0"
+            className="w-[55%] sm:w-[45%] md:w-[260px] lg:w-[300px] order-1 md:order-2 shrink-0"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -173,7 +173,7 @@ function Card({
 
       {/* Myth — strikethrough */}
       <p
-        className="text-[15px] font-medium leading-snug mb-3"
+        className="text-[16px] md:text-[15px] font-medium leading-snug mb-3"
         style={{ color: "#bbb", textDecoration: "line-through" }}
       >
         {myth}
@@ -203,7 +203,7 @@ function Card({
             <path d="M2 5.2l2 2 4-4" />
           </svg>
         </div>
-        <p className="text-[15px] font-bold text-[#0a0a0a] leading-snug">
+        <p className="text-[16px] md:text-[15px] font-bold text-[#0a0a0a] leading-snug">
           {truth}
         </p>
       </div>

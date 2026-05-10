@@ -14,7 +14,7 @@ const features = [
 const links = [
   { label: "Home", href: "/" },
   { label: "Eligibility Checker", href: "/eligibility-checker" },
-  { label: "Blog", href: "/blog" },
+  { label: "Resources", href: "/resources" },
 ];
 
 export default function Footer() {

@@ -1,221 +1,224 @@
 "use client";
 
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useEffect, useRef } from 'react';
 
 const BASE_CARDS = [
-  { title: "Tuition Fee Loan",  sub: "Up to £9,250/year",   tag: "Most Popular",  type: "light"  },
-  { title: "Maintenance Loan",  sub: "Up to £13,348/year",  tag: "Paid to You",   type: "dark"   },
-  { title: "No Certificates?",  sub: "Still may qualify",   tag: "Don't worry",   type: "light"  },
-  { title: "Non-UK Study?",     sub: "Covered in 60s",      tag: "We check this", type: "accent" },
-  { title: "Free Check",        sub: "No obligation",       tag: "Zero cost",     type: "dark"   },
-  { title: "Fast Result",       sub: "Takes 60 seconds",    tag: "Instant",       type: "light"  },
-  { title: "£9,000+",           sub: "Average award",       tag: "Funding",       type: "accent" },
-  { title: "Qualify Today",     sub: "Start your check",    tag: "Apply Now",     type: "light"  },
+  { title: "Tuition Fee Loan",  sub: "Up to £9,250/year",  tag: "Most Popular",  type: "light"  },
+  { title: "Maintenance Loan",  sub: "Up to £13,348/year", tag: "Paid to You",   type: "dark"   },
+  { title: "No Certificates?",  sub: "Still may qualify",  tag: "Don't worry",   type: "light"  },
+  { title: "Non-UK Study?",     sub: "Covered in 60s",     tag: "We check this", type: "accent" },
+  { title: "Free Check",        sub: "No obligation",      tag: "Zero cost",     type: "dark"   },
+  { title: "Fast Result",       sub: "Takes 60 seconds",   tag: "Instant",       type: "light"  },
+  { title: "£9,000+",           sub: "Average award",      tag: "Funding",       type: "accent" },
+  { title: "Qualify Today",     sub: "Start your check",   tag: "Apply Now",     type: "light"  },
 ];
 
-const CARDS = [...BASE_CARDS, ...BASE_CARDS];
+const ORBIT_CARDS = [...BASE_CARDS, ...BASE_CARDS];
+const CAROUSEL_CARDS = [...BASE_CARDS, ...BASE_CARDS, ...BASE_CARDS];
 
-export default function CardOrbitCarousel() {
-  const [screenW, setScreenW] = useState<number>(768);
+const SLOT_W = 168;
+const LOOP_LEN = BASE_CARDS.length * SLOT_W;
 
-  const rotationRef     = useRef<number>(0);
-  const enterScaleRef   = useRef<number>(0);
-  const enterRadiusRef  = useRef<number>(0);
-  const enterStartRef   = useRef<number | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
-  const hubRef          = useRef<HTMLDivElement | null>(null);
-  const cardRefsRef     = useRef<(HTMLDivElement | null)[]>([]);
+// ─── Mobile Horizontal Carousel ──────────────────────────────────────────────
 
-  const ENTER_DURATION = 900;
+function MobileCarousel() {
+  const trackRef   = useRef<HTMLDivElement>(null);
+  const wrapRef    = useRef<HTMLDivElement>(null);
+  const stateRef   = useRef({
+    offset: LOOP_LEN,
+    velocity: 0,
+    dragging: false,
+    dragStartX: 0,
+    dragStartOff: LOOP_LEN,
+    lastX: 0,
+    lastT: 0,
+    paused: false,
+    pauseTimer: null as ReturnType<typeof setTimeout> | null,
+  });
+  const rafRef = useRef<number | null>(null);
 
-  // Sync screen width without triggering cascading renders
-  useLayoutEffect(() => {
-    const update = () => setScreenW(window.innerWidth);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+  function clamp(v: number) {
+    v = v % LOOP_LEN;
+    if (v < 0) v += LOOP_LEN;
+    return v + LOOP_LEN;
+  }
+
+  function apply(offset: number) {
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(${-offset}px)`;
+    }
+  }
+
+  function pauseFor(ms: number) {
+    const s = stateRef.current;
+    s.paused = true;
+    if (s.pauseTimer) clearTimeout(s.pauseTimer);
+    s.pauseTimer = setTimeout(() => {
+      s.paused = false;
+      s.velocity = 0;
+    }, ms);
+  }
+
+  useEffect(() => {
+    apply(stateRef.current.offset);
+
+    const loop = () => {
+      const s = stateRef.current;
+      if (!s.dragging) {
+        if (!s.paused) {
+          s.offset += 0.55;
+          if (s.offset >= LOOP_LEN * 2) s.offset -= LOOP_LEN;
+          apply(s.offset);
+        } else {
+          if (Math.abs(s.velocity) > 0.04) {
+            s.offset += s.velocity;
+            s.velocity *= 0.91;
+            if (s.offset < LOOP_LEN)      s.offset += LOOP_LEN;
+            if (s.offset >= LOOP_LEN * 2) s.offset -= LOOP_LEN;
+            if (Math.abs(s.velocity) < 0.25) {
+              const snap = Math.round(s.offset / SLOT_W) * SLOT_W;
+              s.offset += (snap - s.offset) * 0.1;
+            }
+            apply(s.offset);
+          }
+        }
+      }
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    rafRef.current = requestAnimationFrame(loop);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
-  // Single rAF loop: enter animation + auto-rotate
-  useEffect(() => {
-    const isMobile = screenW < 480;
-    const isTablet = screenW >= 480 && screenW < 768;
+  const onPointerDown = (e: React.PointerEvent) => {
+    const s = stateRef.current;
+    s.dragging = true;
+    s.dragStartX = e.clientX;
+    s.dragStartOff = s.offset;
+    s.lastX = e.clientX;
+    s.lastT = performance.now();
+    s.velocity = 0;
+    wrapRef.current?.setPointerCapture(e.pointerId);
+    pauseFor(4000);
+  };
 
-    const BASE_RADIUS  = isMobile ? 115 : isTablet ? 200 : 400;
-    const translateY   = isMobile ? 30  : isTablet ? 50  : 25;
-    const rotateX      = isMobile ? 8   : isTablet ? 10  : 12;
-    const ANGLE_PER    = 360 / CARDS.length;
+  const onPointerMove = (e: React.PointerEvent) => {
+    const s = stateRef.current;
+    if (!s.dragging) return;
+    const now = performance.now();
+    const dx  = e.clientX - s.lastX;
+    const dt  = now - s.lastT || 1;
+    s.velocity = (-dx / dt) * 14;
+    s.lastX = e.clientX;
+    s.lastT = now;
+    s.offset = clamp(s.dragStartOff - (e.clientX - s.dragStartX));
+    apply(s.offset);
+  };
 
-    // Reset enter animation when screenW changes
-    enterStartRef.current  = null;
-    enterScaleRef.current  = 0;
-    enterRadiusRef.current = 0;
-
-    const tick = (timestamp: number) => {
-      if (enterStartRef.current === null) {
-        enterStartRef.current = timestamp;
-      }
-
-      const elapsed  = timestamp - enterStartRef.current;
-      const progress = Math.min(elapsed / ENTER_DURATION, 1);
-      const eased    = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-
-      enterScaleRef.current  = eased;
-      enterRadiusRef.current = eased;
-
-      rotationRef.current -= 0.12;
-
-      const RADIUS  = BASE_RADIUS * enterRadiusRef.current;
-      const rotMod  = rotationRef.current % 360;
-
-      if (hubRef.current) {
-        hubRef.current.style.transform =
-          `translateY(${translateY}px) rotateX(${rotateX}deg) rotateY(${rotationRef.current}deg) scale(${enterScaleRef.current})`;
-      }
-
-      cardRefsRef.current.forEach((el, i) => {
-        if (!el) return;
-        const itemAngle = i * ANGLE_PER;
-        const rel       = (itemAngle + rotMod + 360) % 360;
-        const norm      = rel > 180 ? 360 - rel : rel;
-        const opacity   =
-          norm > 90
-            ? 0
-            : Math.pow(1 - norm / 90, 1.5) * enterScaleRef.current;
-
-        el.style.transform = `rotateY(${itemAngle}deg) translateZ(${RADIUS}px)`;
-        el.style.opacity   = String(opacity);
-      });
-
-      animationFrameRef.current = requestAnimationFrame(tick);
-    };
-
-    animationFrameRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [screenW]);
-
-  const isMobile = screenW < 480;
-  const isTablet = screenW >= 480 && screenW < 768;
-
-  const CARD_SIZE   = isMobile ? 72  : isTablet ? 88  : 130;
-  const perspective = isMobile ? 500 : isTablet ? 800 : 1200;
-  const containerH  = isMobile ? 200 : isTablet ? 260 : 320;
-  const titleSize   = isMobile ? '9px'  : isTablet ? '10px' : '13px';
-  const subSize     = isMobile ? '7px'  : isTablet ? '8px'  : '10px';
-  const tagSize     = isMobile ? '6px'  : '7px';
-  const padding     = isMobile ? '7px'  : isTablet ? '8px'  : '12px';
-  const borderRad   = '14px';
+  const onPointerUp = () => {
+    stateRef.current.dragging = false;
+    pauseFor(2200);
+  };
 
   return (
     <div
+      ref={wrapRef}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
       style={{
+        position: 'relative',
         width: '100%',
-        height: `${containerH}px`,
-        perspective: `${perspective}px`,
-        perspectiveOrigin: '50% 30%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'visible',
+        overflow: 'hidden',
+        touchAction: 'pan-y',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
       }}
     >
+      {/* ✅ Fade overlays REMOVED — no more white shades on left/right */}
+
       <div
-        ref={hubRef}
+        ref={trackRef}
         style={{
-          position: 'relative',
-          width: '0px',
-          height: '0px',
-          transformStyle: 'preserve-3d',
+          display: 'flex',
+          willChange: 'transform',
+          padding: '20px 0',
         }}
       >
-        {CARDS.map((card, i) => {
+        {CAROUSEL_CARDS.map((card, i) => {
           const isDark   = card.type === 'dark';
           const isAccent = card.type === 'accent';
 
-          const bg     = isDark ? '#0f0f0f' : isAccent ? '#D6FD70' : '#ffffff';
-          const border = isDark
-            ? 'rgba(214,253,112,0.25)'
-            : isAccent
-            ? 'rgba(0,0,0,0.12)'
-            : 'rgba(180,180,180,0.5)';
-          const titleC = isDark ? '#ffffff' : '#0a0a0a';
-          const subC   = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.45)';
+          const bg     = isDark ? '#141414' : isAccent ? '#D6FD70' : '#ffffff';
+          const border = isDark ? '2px solid #3a3a3a' : isAccent ? '2px solid #b8e050' : '2px solid #d4d4d4';
+          const shadow = isDark
+            ? '0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px #2e2e2e'
+            : '0 2px 12px rgba(0,0,0,0.08)';
+
+          const tagBg  = isDark ? '#2a2a2a' : '#D6FD70';
+          const tagC   = isDark ? '#D6FD70' : '#111111';
+          const tagBdr = isDark ? '1px solid #3d3d3d' : 'none';
+
+          const titleC = isDark ? '#f0f0f0' : '#0a0a0a';
+          const subC   = isDark ? '#888888' : 'rgba(0,0,0,0.50)';
 
           return (
             <div
               key={i}
-              ref={(el) => { cardRefsRef.current[i] = el; }}
-              style={{
-                position: 'absolute',
-                width: `${CARD_SIZE}px`,
-                height: `${CARD_SIZE}px`,
-                left: `${-CARD_SIZE / 2}px`,
-                top: `${-CARD_SIZE / 2}px`,
-                opacity: 0,
-              }}
+              style={{ flex: '0 0 168px', padding: '0 10px', boxSizing: 'border-box' }}
             >
               <div
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  background: bg,
-                  border: `1px solid ${border}`,
-                  borderRadius: borderRad,
-                  padding,
+                  width: 148,
+                  height: 148,
+                  borderRadius: 16,
+                  padding: 13,
                   boxSizing: 'border-box',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  boxShadow: isDark
-                    ? '0 6px 24px rgba(0,0,0,0.5)'
-                    : '0 6px 24px rgba(0,0,0,0.10)',
+                  background: bg,
+                  border,
+                  boxShadow: shadow,
                 }}
               >
                 <div>
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      background: '#D6FD70',
-                      color: '#0a0a0a',
-                      fontSize: tagSize,
-                      fontWeight: 700,
-                      padding: '2px 5px',
-                      borderRadius: '20px',
-                      letterSpacing: '0.03em',
-                      textTransform: 'uppercase',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
+                  <span style={{
+                    display: 'inline-block',
+                    background: tagBg,
+                    color: tagC,
+                    border: tagBdr,
+                    fontSize: 8,
+                    fontWeight: 800,
+                    padding: '3px 8px',
+                    borderRadius: 99,
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
+                    whiteSpace: 'nowrap',
+                  }}>
                     {card.tag}
                   </span>
                 </div>
-
                 <div>
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: titleSize,
-                      fontWeight: 600,
-                      color: titleC,
-                      lineHeight: 1.2,
-                      marginBottom: '3px',
-                    }}
-                  >
+                  <p style={{
+                    margin: '0 0 4px',
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: titleC,
+                    lineHeight: 1.25,
+                  }}>
                     {card.title}
                   </p>
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: subSize,
-                      color: subC,
-                      fontWeight: 400,
-                    }}
-                  >
+                  <p style={{
+                    margin: 0,
+                    fontSize: 11,
+                    fontWeight: 400,
+                    color: subC,
+                    lineHeight: 1.4,
+                  }}>
                     {card.sub}
                   </p>
                 </div>
@@ -226,4 +229,183 @@ export default function CardOrbitCarousel() {
       </div>
     </div>
   );
+}
+
+// ─── Desktop 3D Orbit Carousel ────────────────────────────────────────────────
+
+function DesktopOrbit() {
+  const hubRef      = useRef<HTMLDivElement>(null);
+  const cardRefsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const rafRef      = useRef<number | null>(null);
+
+  const ANGLE_PER  = 360 / ORBIT_CARDS.length;
+  const RADIUS     = 400;
+  const ENTER_DUR  = 900;
+
+  useEffect(() => {
+    let rotation   = 0;
+    let enterStart: number | null = null;
+
+    const orbitLoop = (ts: number) => {
+      if (!enterStart) enterStart = ts;
+      const prog  = Math.min((ts - enterStart) / ENTER_DUR, 1);
+      const eased = 1 - Math.pow(1 - prog, 3);
+      rotation -= 0.12;
+
+      if (hubRef.current) {
+        hubRef.current.style.transform =
+          `translateY(25px) rotateX(12deg) rotateY(${rotation}deg) scale(${eased})`;
+      }
+
+      const rotMod = rotation % 360;
+      cardRefsRef.current.forEach((el, i) => {
+        if (!el) return;
+        const ang  = i * ANGLE_PER;
+        const rel  = (ang + rotMod + 360) % 360;
+        const norm = rel > 180 ? 360 - rel : rel;
+        const opacity = norm > 90 ? 0 : Math.pow(1 - norm / 90, 1.5) * eased;
+        el.style.transform = `rotateY(${ang}deg) translateZ(${RADIUS * eased}px)`;
+        el.style.opacity   = String(opacity);
+      });
+
+      rafRef.current = requestAnimationFrame(orbitLoop);
+    };
+
+    rafRef.current = requestAnimationFrame(orbitLoop);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return (
+    <div style={{
+      width: '100%',
+      height: 320,
+      perspective: 1100,
+      perspectiveOrigin: '50% 40%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'visible',
+    }}>
+      <div
+        ref={hubRef}
+        style={{
+          position: 'relative',
+          width: 0,
+          height: 0,
+          transformStyle: 'preserve-3d',
+        }}
+      >
+        {ORBIT_CARDS.map((card, i) => {
+          const isDark   = card.type === 'dark';
+          const isAccent = card.type === 'accent';
+
+          const bg     = isDark ? '#141414' : isAccent ? '#D6FD70' : '#ffffff';
+          const border = isDark ? '2px solid #3a3a3a' : isAccent ? '2px solid #b8e050' : '2px solid #d4d4d4';
+          const shadow = isDark
+            ? '0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px #2e2e2e'
+            : '0 2px 12px rgba(0,0,0,0.10)';
+
+          const tagBg  = isDark ? '#2a2a2a' : '#D6FD70';
+          const tagC   = isDark ? '#D6FD70' : '#111111';
+          const tagBdr = isDark ? '1px solid #3d3d3d' : 'none';
+
+          const titleC = isDark ? '#f0f0f0' : '#0a0a0a';
+          const subC   = isDark ? '#888888' : 'rgba(0,0,0,0.48)';
+
+          return (
+            <div
+              key={i}
+              ref={(el) => { cardRefsRef.current[i] = el; }}
+              style={{
+                position: 'absolute',
+                width: 130,
+                height: 130,
+                left: -65,
+                top: -65,
+                opacity: 0,
+              }}
+            >
+              <div style={{
+                width: 130,
+                height: 130,
+                boxSizing: 'border-box',
+                background: bg,
+                border,
+                borderRadius: 16,
+                padding: 12,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                boxShadow: shadow,
+              }}>
+                <div>
+                  <span style={{
+                    display: 'inline-block',
+                    background: tagBg,
+                    color: tagC,
+                    border: tagBdr,
+                    fontSize: 7,
+                    fontWeight: 800,
+                    padding: '3px 7px',
+                    borderRadius: 99,
+                    letterSpacing: '0.05em',
+                    textTransform: 'uppercase',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {card.tag}
+                  </span>
+                </div>
+                <div>
+                  <p style={{
+                    margin: '0 0 3px',
+                    fontSize: 12.5,
+                    fontWeight: 700,
+                    color: titleC,
+                    lineHeight: 1.2,
+                  }}>
+                    {card.title}
+                  </p>
+                  <p style={{
+                    margin: 0,
+                    fontSize: 10,
+                    fontWeight: 400,
+                    color: subC,
+                  }}>
+                    {card.sub}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Root Component ───────────────────────────────────────────────────────────
+
+export default function CardOrbitCarousel() {
+  // ✅ Fix: initialise both pieces of state together using a lazy initialiser
+  // so neither setState call happens synchronously inside an effect body.
+  const [{ isMobile, mounted }, setLayout] = useState<{
+    isMobile: boolean;
+    mounted: boolean;
+  }>({ isMobile: false, mounted: false });
+
+  useLayoutEffect(() => {
+    // ✅ Single setState call — no cascading renders, no lint warning
+    const check = () =>
+      setLayout({ isMobile: window.innerWidth < 768, mounted: true });
+
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  if (!mounted) return null;
+
+  return isMobile ? <MobileCarousel /> : <DesktopOrbit />;
 }
