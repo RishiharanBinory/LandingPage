@@ -4,17 +4,272 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowUpRight, Clock, Calendar } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpRight, Clock, Calendar, ArrowRight, CheckCircle2 } from "lucide-react";
 import { blogPosts, type BlogPost } from "../types/blog";
 import { ExploreCategories } from "@/components/Blogs/ExploreCategories";
-import NewsletterCard from "@/components/Maincomponents/NewsletterCard";
 
 const LIME = "#D6FD70";
 const BLACK = "#0a0a0a";
 const WHITE = "#ffffff";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
+// ─── Newsletter Card ──────────────────────────────────────────────
+function NewsletterCard() {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [btnHovered, setBtnHovered] = useState(false);
+
+  const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleSubmit = () => {
+    if (!isValid) return;
+    setSubmitted(true);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.65, delay: 0.38, ease: EASE }}
+      style={{
+        position: "relative",
+        maxWidth: "520px",
+        width: "100%",
+        margin: "0 auto",
+      }}
+    >
+      {/* Lime accent glow behind card */}
+      <div
+        style={{
+          position: "absolute",
+          inset: "-1px",
+          borderRadius: "22px",
+          background: `linear-gradient(135deg, ${LIME}2a, transparent 55%)`,
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          background: "rgba(255,255,255,0.06)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+          border: "1.5px solid rgba(255,255,255,0.13)",
+          borderRadius: "20px",
+          padding: "36px 40px",
+          boxShadow: "0 8px 40px rgba(0,0,0,0.35)",
+        }}
+      >
+        <AnimatePresence mode="wait">
+          {!submitted ? (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Label pill */}
+              <div style={{ marginBottom: "16px" }}>
+                <span
+                  style={{
+                    background: `${LIME}1a`,
+                    border: `1px solid ${LIME}44`,
+                    color: LIME,
+                    borderRadius: "9999px",
+                    padding: "4px 14px",
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  }}
+                >
+                  Weekly Newsletter
+                </span>
+              </div>
+
+              <h3
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "22px",
+                  fontWeight: 800,
+                  color: WHITE,
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.02em",
+                  margin: "0 0 10px",
+                }}
+              >
+                Stay in the know.
+              </h3>
+              <p
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "14px",
+                  color: "rgba(255,255,255,0.52)",
+                  lineHeight: 1.65,
+                  margin: "0 0 28px",
+                }}
+              >
+                Plain-English student finance updates — straight to your inbox,
+                no jargon.
+              </p>
+
+              {/* Input + Button row */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "stretch",
+                }}
+              >
+                <div style={{ flex: 1, position: "relative" }}>
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                    style={{
+                      width: "100%",
+                      padding: "13px 18px",
+                      borderRadius: "12px",
+                      border: `1.5px solid ${
+                        focused ? `${LIME}88` : "rgba(255,255,255,0.14)"
+                      }`,
+                      background: "rgba(255,255,255,0.07)",
+                      color: WHITE,
+                      fontSize: "14px",
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      fontWeight: 500,
+                      outline: "none",
+                      transition: "border-color 0.2s ease",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                  <style>{`input[type="email"]::placeholder { color: rgba(255,255,255,0.35); }`}</style>
+                </div>
+
+                <button
+                  onClick={handleSubmit}
+                  onMouseEnter={() => setBtnHovered(true)}
+                  onMouseLeave={() => setBtnHovered(false)}
+                  disabled={!isValid}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "13px 22px",
+                    borderRadius: "12px",
+                    border: "none",
+                    cursor: isValid ? "pointer" : "not-allowed",
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontSize: "14px",
+                    fontWeight: 700,
+                    letterSpacing: "0.02em",
+                    background: isValid
+                      ? btnHovered
+                        ? "#c8f040"
+                        : LIME
+                      : "rgba(255,255,255,0.1)",
+                    color: isValid ? BLACK : "rgba(255,255,255,0.3)",
+                    transition:
+                      "background 0.2s ease, color 0.2s ease, transform 0.15s ease",
+                    transform: btnHovered && isValid ? "scale(1.03)" : "scale(1)",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}
+                >
+                  Subscribe
+                  <ArrowRight size={15} />
+                </button>
+              </div>
+
+              <p
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "11px",
+                  color: "rgba(255,255,255,0.3)",
+                  margin: "14px 0 0",
+                  textAlign: "center",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                No spam, ever. Unsubscribe anytime.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.45, ease: EASE }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                padding: "16px 0",
+                gap: "14px",
+              }}
+            >
+              <div
+                style={{
+                  width: "52px",
+                  height: "52px",
+                  borderRadius: "50%",
+                  background: `${LIME}1a`,
+                  border: `1.5px solid ${LIME}44`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <CheckCircle2 size={24} color={LIME} />
+              </div>
+              <div>
+                <h3
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontSize: "20px",
+                    fontWeight: 800,
+                    color: WHITE,
+                    margin: "0 0 8px",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  You&apos;re in!
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontSize: "14px",
+                    color: "rgba(255,255,255,0.5)",
+                    margin: 0,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Check your inbox for a confirmation.
+                  <br />
+                  First edition lands next week.
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Blog Image ───────────────────────────────────────────────────
 function BlogImage({
   src,
   alt,
@@ -80,6 +335,7 @@ function BlogImage({
   );
 }
 
+// ─── Featured Card ────────────────────────────────────────────────
 function FeaturedCard({ post }: { post: BlogPost }) {
   const [hovered, setHovered] = useState(false);
 
@@ -236,6 +492,7 @@ function FeaturedCard({ post }: { post: BlogPost }) {
   );
 }
 
+// ─── Blog Card ────────────────────────────────────────────────────
 function BlogCard({ post, index }: { post: BlogPost; index: number }) {
   const [hovered, setHovered] = useState(false);
 
@@ -255,7 +512,8 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
             overflow: "hidden",
             background: WHITE,
             border: `2px solid ${hovered ? LIME : "rgba(0,0,0,0.07)"}`,
-            transition: "border-color 0.25s ease, transform 0.28s ease, box-shadow 0.28s ease",
+            transition:
+              "border-color 0.25s ease, transform 0.28s ease, box-shadow 0.28s ease",
             transform: hovered ? "translateY(-5px)" : "translateY(0)",
             boxShadow: hovered
               ? "0 20px 48px rgba(0,0,0,0.11)"
@@ -348,7 +606,7 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
   );
 }
 
-// ─── Hero Section ─────────────────────────────────────────────────
+// ─── Hero Section (updated with newsletter card) ──────────────────
 function ResourcesHero() {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -360,10 +618,10 @@ function ResourcesHero() {
   }, []);
 
   const pills = [
-    { label: "Student Finance", style: { left: "5%", top: "30%" } },
-    { label: "Tuition Fees", style: { left: "9%", bottom: "30%" } },
-    { label: "Maintenance Loan", style: { right: "4%", top: "35%" } },
-    { label: "Eligibility", style: { right: "8%", bottom: "28%" } },
+    { label: "Student Finance", style: { left: "5%", top: "22%" } },
+    { label: "Tuition Fees", style: { left: "9%", bottom: "22%" } },
+    { label: "Maintenance Loan", style: { right: "4%", top: "22%" } },
+    { label: "Eligibility", style: { right: "8%", bottom: "22%" } },
   ];
 
   return (
@@ -371,12 +629,12 @@ function ResourcesHero() {
       style={{
         position: "relative",
         background: BLACK,
-        minHeight: "480px",
+        minHeight: "600px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
-        padding: "100px 24px 80px",
+        padding: "100px 24px 90px",
       }}
     >
       {/* Lime glow */}
@@ -434,8 +692,15 @@ function ResourcesHero() {
           </motion.div>
         ))}
 
-      {/* Text */}
-      <div style={{ position: "relative", textAlign: "center", maxWidth: "720px" }}>
+      {/* Text + Newsletter Card */}
+      <div
+        style={{
+          position: "relative",
+          textAlign: "center",
+          maxWidth: "720px",
+          width: "100%",
+        }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -498,12 +763,15 @@ function ResourcesHero() {
             color: "rgba(255,255,255,0.52)",
             lineHeight: 1.65,
             maxWidth: "500px",
-            margin: "0 auto",
+            margin: "0 auto 48px",
           }}
         >
-          Plain-English guides on UK student finance — who qualifies, how much you
-          get, and how to apply without the confusion.
+          Plain-English guides on UK student finance — who qualifies, how much
+          you get, and how to apply without the confusion.
         </motion.p>
+
+        {/* ── Newsletter Card injected here ── */}
+        <NewsletterCard />
       </div>
     </section>
   );
@@ -584,7 +852,6 @@ export default function ResourcesPage() {
       </section>
 
       <ExploreCategories />
-
     </main>
   );
 }
