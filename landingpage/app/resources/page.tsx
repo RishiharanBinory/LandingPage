@@ -276,10 +276,10 @@ function ResourcesHero() {
   }, []);
 
   const pills = [
-    { label: "Student Finance", style: { left: "5%", top: "22%" } },
-    { label: "Tuition Fees", style: { left: "9%", bottom: "22%" } },
-    { label: "Maintenance Loan", style: { right: "4%", top: "22%" } },
-    { label: "Eligibility", style: { right: "8%", bottom: "22%" } },
+    { label: "Student Finance", style: { left: "15%", top: "22%" } },
+    { label: "Tuition Fees", style: { left: "19%", bottom: "22%" } },
+    { label: "Maintenance Loan", style: { right: "14%", top: "22%" } },
+    { label: "Eligibility", style: { right: "18%", bottom: "22%" } },
   ];
 
   return (
