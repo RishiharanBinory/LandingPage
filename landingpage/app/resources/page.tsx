@@ -1,13 +1,8 @@
-// app/resources/page.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Clock, Calendar, ArrowRight, CheckCircle2 } from "lucide-react";
-import { blogPosts, type BlogPost } from "../types/blog";
-import { ExploreCategories } from "@/components/Blogs/ExploreCategories";
+import { ArrowRight, CheckCircle2, Bell, BookOpen, Sparkles } from "lucide-react";
 
 const LIME = "#D6FD70";
 const BLACK = "#0a0a0a";
@@ -269,344 +264,7 @@ function NewsletterCard() {
   );
 }
 
-// ─── Blog Image ───────────────────────────────────────────────────
-function BlogImage({
-  src,
-  alt,
-  style,
-}: {
-  src: string;
-  alt: string;
-  style?: React.CSSProperties;
-}) {
-  const [errored, setErrored] = useState(false);
-  const filename = src.split("/").pop();
-
-  return (
-    <div
-      style={{
-        position: "relative",
-        background: "#f0f0ee",
-        overflow: "hidden",
-        ...style,
-      }}
-    >
-      {!errored ? (
-        <img
-          src={src}
-          alt={alt}
-          onError={() => setErrored(true)}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      ) : (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              color: "#bbb",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-            }}
-          >
-            {filename}
-          </span>
-          <div
-            style={{
-              width: "36px",
-              height: "2px",
-              background: LIME,
-              borderRadius: "2px",
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Featured Card ────────────────────────────────────────────────
-function FeaturedCard({ post }: { post: BlogPost }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: EASE }}
-    >
-      <Link href={`/resources/${post.id}`} style={{ textDecoration: "none" }}>
-        <article
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            borderRadius: "20px",
-            overflow: "hidden",
-            border: `2px solid ${hovered ? LIME : "rgba(0,0,0,0.08)"}`,
-            transition: "border-color 0.25s ease, box-shadow 0.25s ease",
-            boxShadow: hovered
-              ? "0 24px 56px rgba(0,0,0,0.12)"
-              : "0 2px 10px rgba(0,0,0,0.04)",
-            background: WHITE,
-            cursor: "pointer",
-          }}
-        >
-          <BlogImage
-            src={`/blog/${post.image}`}
-            alt={post.title}
-            style={{
-              height: "400px",
-              transform: hovered ? "scale(1.04)" : "scale(1)",
-              transition: "transform 0.55s ease",
-            }}
-          />
-          <div
-            style={{
-              padding: "48px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <div>
-              <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
-                <span
-                  style={{
-                    background: LIME,
-                    color: BLACK,
-                    borderRadius: "9999px",
-                    padding: "4px 14px",
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Featured
-                </span>
-                <span
-                  style={{
-                    background: "rgba(0,0,0,0.06)",
-                    color: "#555",
-                    borderRadius: "9999px",
-                    padding: "4px 14px",
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {post.category}
-                </span>
-              </div>
-              <h2
-                style={{
-                  fontSize: "clamp(20px, 2.2vw, 30px)",
-                  fontWeight: 800,
-                  color: BLACK,
-                  lineHeight: 1.2,
-                  letterSpacing: "-0.02em",
-                  marginBottom: "14px",
-                }}
-              >
-                {post.title}
-              </h2>
-              <p
-                style={{
-                  fontSize: "15px",
-                  color: "#666",
-                  lineHeight: 1.7,
-                  marginBottom: "28px",
-                }}
-              >
-                {post.excerpt}
-              </p>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                gap: "14px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "14px",
-                  fontSize: "13px",
-                  color: "#999",
-                  fontWeight: 500,
-                }}
-              >
-                <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <Calendar size={12} />
-                  {post.date}
-                </span>
-                <span>·</span>
-                <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <Clock size={12} />
-                  {post.readTime}
-                </span>
-              </div>
-              <button
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "10px 20px",
-                  borderRadius: "9999px",
-                  background: hovered ? BLACK : "rgba(0,0,0,0.07)",
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  color: hovered ? WHITE : BLACK,
-                  transition: "background 0.25s ease, color 0.25s ease",
-                  letterSpacing: "0.03em",
-                }}
-              >
-                Read more
-                <ArrowUpRight size={14} />
-              </button>
-            </div>
-          </div>
-        </article>
-      </Link>
-    </motion.div>
-  );
-}
-
-// ─── Blog Card ────────────────────────────────────────────────────
-function BlogCard({ post, index }: { post: BlogPost; index: number }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.5, ease: EASE }}
-    >
-      <Link href={`/resources/${post.id}`} style={{ textDecoration: "none" }}>
-        <article
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          style={{
-            borderRadius: "16px",
-            overflow: "hidden",
-            background: WHITE,
-            border: `2px solid ${hovered ? LIME : "rgba(0,0,0,0.07)"}`,
-            transition:
-              "border-color 0.25s ease, transform 0.28s ease, box-shadow 0.28s ease",
-            transform: hovered ? "translateY(-5px)" : "translateY(0)",
-            boxShadow: hovered
-              ? "0 20px 48px rgba(0,0,0,0.11)"
-              : "0 2px 8px rgba(0,0,0,0.04)",
-            cursor: "pointer",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <BlogImage
-            src={`/blog/${post.image}`}
-            alt={post.title}
-            style={{
-              height: "220px",
-              flexShrink: 0,
-              transform: hovered ? "scale(1.04)" : "scale(1)",
-              transition: "transform 0.5s ease",
-            }}
-          />
-          <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1 }}>
-            <h3
-              style={{
-                fontSize: "18px",
-                fontWeight: 700,
-                color: BLACK,
-                lineHeight: 1.3,
-                letterSpacing: "-0.01em",
-                marginBottom: "16px",
-                flex: 1,
-              }}
-            >
-              {post.title}
-            </h3>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                gap: "8px",
-                marginBottom: "16px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "12px",
-                  fontSize: "12px",
-                  color: "#999",
-                  fontWeight: 500,
-                  alignItems: "center",
-                }}
-              >
-                <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <Calendar size={11} />
-                  {post.date}
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <Clock size={11} />
-                  {post.readTime}
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                fontSize: "13px",
-                fontWeight: 700,
-                color: hovered ? BLACK : "#555",
-                transition: "color 0.2s ease",
-                borderTop: `1.5px solid ${hovered ? LIME : "rgba(0,0,0,0.06)"}`,
-                paddingTop: "14px",
-              }}
-            >
-              Read more
-              <ArrowUpRight
-                size={14}
-                style={{
-                  transition: "transform 0.25s ease",
-                  transform: hovered ? "translate(2px,-2px)" : "translate(0,0)",
-                }}
-              />
-            </div>
-          </div>
-        </article>
-      </Link>
-    </motion.div>
-  );
-}
-
-// ─── Hero Section (updated with newsletter card) ──────────────────
+// ─── Hero Section ─────────────────────────────────────────────────
 function ResourcesHero() {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -736,23 +394,18 @@ function ResourcesHero() {
             margin: "0 0 6px",
           }}
         >
-          Everything you need
-        </motion.h1>
-        <motion.h1
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.18, ease: EASE }}
-          style={{
+          Everything you need to <span  style={{
             fontSize: "clamp(42px, 7vw, 82px)",
             fontWeight: 800,
             lineHeight: 1.05,
             letterSpacing: "-0.03em",
             color: LIME,
             margin: "0 0 26px",
-          }}
-        >
-          to know.
+          }}>know.
+            
+          </span >
         </motion.h1>
+   
 
         <motion.p
           initial={{ opacity: 0, y: 16 }}
@@ -770,18 +423,296 @@ function ResourcesHero() {
           you get, and how to apply without the confusion.
         </motion.p>
 
-        {/* ── Newsletter Card injected here ── */}
+        {/* Newsletter Card */}
         <NewsletterCard />
       </div>
     </section>
   );
 }
 
-// ─── Main listing page ────────────────────────────────────────────
-export default function ResourcesPage() {
-  const featuredPost = blogPosts.find((p) => p.featured);
-  const regularPosts = blogPosts.filter((p) => !p.featured);
+// ─── Coming Soon Section ──────────────────────────────────────────
+function ComingSoonSection() {
+  const upcomingTopics = [
+    {
+      icon: <BookOpen size={20} />,
+      title: "Maintenance Loan Explained",
+      description: "A full breakdown of how much you can get and what affects your amount.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <Sparkles size={20} />,
+      title: "Tuition Fee Guide 2025",
+      description: "Everything you need to know about fees, repayment, and what it means for you.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <Bell size={20} />,
+      title: "Eligibility Checker Walkthrough",
+      description: "Step-by-step: find out if you qualify before you even apply.",
+      eta: "Coming soon",
+    },
+  ];
 
+  return (
+    <section
+      style={{
+        maxWidth: "1000px",
+        margin: "0 auto",
+        padding: "100px 24px 120px",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    >
+      {/* Section header */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease: EASE }}
+        style={{ textAlign: "center", marginBottom: "72px" }}
+      >
+        {/* Eyebrow */}
+        <span
+          style={{
+            display: "inline-block",
+            background: `${LIME}22`,
+            border: `1px solid ${LIME}55`,
+            color: "#5a7a00",
+            borderRadius: "9999px",
+            padding: "5px 16px",
+            fontSize: "10px",
+            fontWeight: 700,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            marginBottom: "20px",
+          }}
+        >
+          Articles & Guides
+        </span>
+
+        <h2
+          style={{
+            fontSize: "clamp(32px, 5vw, 52px)",
+            fontWeight: 800,
+            color: BLACK,
+            letterSpacing: "-0.03em",
+            lineHeight: 1.1,
+            margin: "0 0 18px",
+          }}
+        >
+          Our guides are on their way.
+        </h2>
+        <p
+          style={{
+            fontSize: "16px",
+            color: "#888",
+            lineHeight: 1.7,
+            maxWidth: "480px",
+            margin: "0 auto",
+          }}
+        >
+          We&apos;re writing detailed, jargon-free articles so you can navigate UK
+          student finance with confidence. Here&apos;s a sneak peek at what&apos;s coming.
+        </p>
+      </motion.div>
+
+      {/* Topic preview cards */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: "20px",
+          marginBottom: "72px",
+        }}
+      >
+        {upcomingTopics.map((topic, i) => (
+          <motion.div
+            key={topic.title}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1, duration: 0.5, ease: EASE }}
+            style={{
+              background: WHITE,
+              border: "1.5px solid rgba(0,0,0,0.07)",
+              borderRadius: "18px",
+              padding: "32px",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Subtle lime corner accent */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: "80px",
+                height: "80px",
+                background: `radial-gradient(circle at top right, ${LIME}30, transparent 70%)`,
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* Icon */}
+            <div
+              style={{
+                width: "44px",
+                height: "44px",
+                borderRadius: "12px",
+                background: `${LIME}22`,
+                border: `1px solid ${LIME}44`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#5a7a00",
+                marginBottom: "20px",
+              }}
+            >
+              {topic.icon}
+            </div>
+
+            <h3
+              style={{
+                fontSize: "16px",
+                fontWeight: 700,
+                color: BLACK,
+                letterSpacing: "-0.01em",
+                lineHeight: 1.3,
+                margin: "0 0 10px",
+              }}
+            >
+              {topic.title}
+            </h3>
+            <p
+              style={{
+                fontSize: "13.5px",
+                color: "#888",
+                lineHeight: 1.65,
+                margin: "0 0 20px",
+              }}
+            >
+              {topic.description}
+            </p>
+
+            {/* ETA pill */}
+            <span
+              style={{
+                display: "inline-block",
+                background: "rgba(0,0,0,0.04)",
+                color: "#aaa",
+                borderRadius: "9999px",
+                padding: "4px 12px",
+                fontSize: "11px",
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                border: "1px solid rgba(0,0,0,0.06)",
+              }}
+            >
+              {topic.eta}
+            </span>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Big divider CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.55, ease: EASE }}
+        style={{
+          background: BLACK,
+          borderRadius: "24px",
+          padding: "56px 48px",
+          display: "flex",
+          flexDirection: "column" as const,
+          alignItems: "center",
+          textAlign: "center",
+          gap: "24px",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Decorative glow */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-40px",
+            right: "-40px",
+            width: "260px",
+            height: "260px",
+            borderRadius: "9999px",
+            background: LIME,
+            opacity: 0.08,
+            filter: "blur(60px)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "-40px",
+            left: "-20px",
+            width: "200px",
+            height: "200px",
+            borderRadius: "9999px",
+            background: LIME,
+            opacity: 0.05,
+            filter: "blur(50px)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div
+          style={{
+            width: "56px",
+            height: "56px",
+            borderRadius: "16px",
+            background: `${LIME}18`,
+            border: `1.5px solid ${LIME}33`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Bell size={22} color={LIME} />
+        </div>
+
+        <div>
+          <h3
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: "clamp(22px, 3.5vw, 34px)",
+              fontWeight: 800,
+              color: WHITE,
+              letterSpacing: "-0.025em",
+              lineHeight: 1.15,
+              margin: "0 0 12px",
+            }}
+          >
+            Be the first to read them.
+          </h3>
+          <p
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: "15px",
+              color: "rgba(255,255,255,0.48)",
+              lineHeight: 1.65,
+              maxWidth: "400px",
+              margin: "0 auto",
+            }}
+          >
+            Subscribe to the newsletter above and we&apos;ll notify you the moment
+            new guides go live — no spam, just useful stuff.
+          </p>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────
+export default function ResourcesPage() {
   return (
     <main
       style={{
@@ -791,67 +722,7 @@ export default function ResourcesPage() {
       }}
     >
       <ResourcesHero />
-
-      <section
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "80px 24px 100px",
-        }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, ease: EASE }}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-            marginBottom: "40px",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "12px",
-              fontWeight: 700,
-              color: "#bbb",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              margin: 0,
-              whiteSpace: "nowrap",
-            }}
-          >
-            Latest Articles
-          </h2>
-          <div style={{ flex: 1, height: "1px", background: "rgba(0,0,0,0.08)" }} />
-          <span style={{ fontSize: "12px", color: "#bbb", fontWeight: 500 }}>
-            {blogPosts.length} articles
-          </span>
-        </motion.div>
-
-        {featuredPost && (
-          <div style={{ marginBottom: "32px" }}>
-            <FeaturedCard post={featuredPost} />
-          </div>
-        )}
-
-        {regularPosts.length > 0 && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              gap: "20px",
-            }}
-          >
-            {regularPosts.map((post, i) => (
-              <BlogCard key={post.id} post={post} index={i} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <ExploreCategories />
+      <ComingSoonSection />
     </main>
   );
 }
