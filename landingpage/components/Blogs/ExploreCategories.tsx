@@ -236,7 +236,7 @@ export function ExploreCategories() {
               margin: "0 0 12px",
             }}
           >
-            Explore Categories
+            Explore More
           </h2>
           <p
             style={{
