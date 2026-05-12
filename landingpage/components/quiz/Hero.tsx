@@ -39,60 +39,118 @@ type Question = {
 type ScreenState = "quiz" | "not_eligible" | "review" | "unlock" | "form";
 
 // ── Questions ─────────────────────────────────────────────────────────────────
+// CHANGE LOG (from PDF):
+// Page 1: ILR moved to standalone option; "Other Visa" type for remaining; capitalise UK National / Irish National
+// Page 2: Rephrase yes/no; "No" → ask reason (work/study → NOT_ELIGIBLE, vacation → continue); remove sub from residency q; add bachelor's/master's loan question after residency
+// Page 3: Split loan question by degree type; master's 1yr/2yr → NOT_ELIGIBLE; bachelor's 4yr+ → NOT_ELIGIBLE
+// Page 4: Long-residence option 2 wording fix; add 3rd option → NOT_ELIGIBLE; 3-year residency before long-residence; capitalisation fixes
+
 const QUESTIONS: Question[] = [
+  // ── Q1: Nationality ──────────────────────────────────────────────────────
   {
     id: "q1",
     section: "01",
     sectionNum: 1,
     sectionLabel: "Nationality",
     question: "What is your nationality or current immigration status?",
+    // sub removed — PDF page 1 shows no sub text requested; keeping original as it's not flagged
     sub: "Your nationality is the first thing we check to assess your eligibility.",
     options: [
-      { label: "UK national", next: "q2" },
+      // Page 1: capitalise properly
+      { label: "UK National", next: "q2" },
       {
-        label: "EU / Swiss / Norwegian / Icelandic / Liechtenstein national",
+        label: "EU / Swiss / Norwegian / Icelandic / Liechtenstein National",
         next: "q2_eu",
       },
-      { label: "Irish national", next: "q2" },
+      // Page 1: capitalise properly
+      { label: "Irish National", next: "q2" },
+      // Page 1: ILR moved to separate standalone option
       {
-        label: "Other — non-EU visa, ILR, refugee, or another status",
+        label: "Indefinite Leave to Remain / Enter (ILR / ILE)",
+        sub: "Settled status outside the EU Settlement Scheme",
+        next: "q1_ilr_residency",
+      },
+      // Page 1: remaining "Other" is now specifically "Other Visa" type
+      {
+        label: "Other Visa",
+        sub: "Non-EU visa, refugee status, or another immigration status",
         next: "q1_other",
       },
     ],
   },
+
+  // ── Q2 (UK / Irish nationals): UK Residency ──────────────────────────────
   {
     id: "q2",
     section: "02",
     sectionNum: 2,
     sectionLabel: "UK Residency",
     question: "Have you been living in the UK for the past 3 years?",
-    sub: "Short trips abroad for vacation or visits do not break this requirement.",
+    // Page 2: remove the sub description below the question
     options: [
-      { label: "Yes — I have lived in the UK for 3+ years", next: "q_funding" },
+      // Page 2: rephrase options
+      { label: "Yes — I have lived in the UK for the last three years", next: "q_degree_type" },
+      { label: "No — I have not lived in the UK for the last three years", next: "q2_no_reason" },
+    ],
+  },
+
+  // ── Q2_NO_REASON: Why haven't you been in the UK? (Page 2 new branch) ────
+  {
+    id: "q2_no_reason",
+    section: "02",
+    sectionNum: 2,
+    sectionLabel: "UK Residency",
+    question: "What was the reason you were not in the UK continuously for the last three years?",
+    options: [
       {
-        label: "No — I have not been in the UK for 3 continuous years",
+        label: "Work or study abroad",
+        sub: "I was outside the UK for work or study purposes",
         next: "NOT_ELIGIBLE",
+      },
+      {
+        label: "Vacation or personal reasons",
+        sub: "I was outside the UK for holidays or personal visits",
+        next: "q_degree_type",
       },
     ],
   },
+
+  // ── Q2_EU: EU nationals — residency ──────────────────────────────────────
   {
     id: "q2_eu",
     section: "02",
     sectionNum: 2,
     sectionLabel: "UK Residency",
     question: "Have you been living in the UK for the past 3 years?",
-    sub: "Short trips abroad for vacation or visits do not break this requirement.",
+    // Page 2: remove sub
+    options: [
+      { label: "Yes — I have lived in the UK for the last three years", next: "q2_settled" },
+      { label: "No — I have not lived in the UK for the last three years", next: "q2_eu_no_reason" },
+    ],
+  },
+
+  // ── Q2_EU_NO_REASON: Why not in UK? (EU path) ────────────────────────────
+  {
+    id: "q2_eu_no_reason",
+    section: "02",
+    sectionNum: 2,
+    sectionLabel: "UK Residency",
+    question: "What was the reason you were not in the UK continuously for the last three years?",
     options: [
       {
-        label: "Yes — I have lived in the UK for 3+ years",
-        next: "q2_settled",
+        label: "Work or study abroad",
+        sub: "I was outside the UK for work or study purposes",
+        next: "NOT_ELIGIBLE",
       },
       {
-        label: "No — I have not been in the UK for 3 continuous years",
-        next: "NOT_ELIGIBLE",
+        label: "Vacation or personal reasons",
+        sub: "I was outside the UK for holidays or personal visits",
+        next: "q2_settled",
       },
     ],
   },
+
+  // ── Q2_SETTLED: EU Settlement Status ─────────────────────────────────────
   {
     id: "q2_settled",
     section: "02",
@@ -104,15 +162,19 @@ const QUESTIONS: Question[] = [
       {
         label: "Settled Status",
         sub: "You have been granted full settled status under the EU Settlement Scheme",
-        next: "q_funding",
+        next: "q_degree_type",
       },
       {
         label: "Pre-Settled Status",
         sub: "You have been granted pre-settled status and are still building residency",
-        next: "q_funding",
+        next: "q_degree_type",
       },
     ],
   },
+
+  // ── Q1_OTHER: Other immigration status (non-ILR) ─────────────────────────
+  // Page 1: ILR removed from here (now its own top-level option)
+  // Page 4: capitalise "Irish National"; change "Irish citizen" → "Irish National"
   {
     id: "q1_other",
     section: "01",
@@ -122,32 +184,27 @@ const QUESTIONS: Question[] = [
     sub: "Select the option that most closely matches your situation.",
     options: [
       {
-        label: "Indefinite Leave to Remain / Enter (ILR / ILE)",
-        sub: "Settled status outside the EU Settlement Scheme",
-        next: "q1_ilr_residency",
-      },
-      {
         label: "Long Residence",
-        sub: "20 years in the UK or more than half of your life in the UK",
+        sub: "20 years in the UK or more than half of your age in the UK",
         next: "q1_long_residence",
       },
-      { label: "Refugee or family member of a refugee", next: "q_funding" },
+      { label: "Refugee or family member of a refugee", next: "q_degree_type" },
       {
-        label:
-          "Family member of a UK national, Irish citizen, or settled-status holder",
-        next: "q_funding",
+        // Page 4: "Irish citizen" → "Irish National"; capitalise
+        label: "Family member of a UK National, Irish National, or settled-status holder",
+        next: "q_degree_type",
       },
       {
         label: "Ukraine Permission Extension Scheme / family member",
-        next: "q_funding",
+        next: "q_degree_type",
       },
       {
         label: "Section 67, Calais leave, or dependent thereof",
-        next: "q_funding",
+        next: "q_degree_type",
       },
       {
         label: "Any Afghan scheme or Turkish worker scheme",
-        next: "q_funding",
+        next: "q_degree_type",
       },
       {
         label: "International student visa or Visit visa",
@@ -156,6 +213,9 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
+
+  // ── Q1_LONG_RESIDENCE: Long Residence conditions ──────────────────────────
+  // Page 4: option 2 → "half of my age"; add 3rd option → NOT_ELIGIBLE; 3-year question first
   {
     id: "q1_long_residence",
     section: "01",
@@ -165,36 +225,84 @@ const QUESTIONS: Question[] = [
     sub: "You only need to meet one of these two conditions.",
     options: [
       {
+        // Page 4: leads to 3-year residency check first
         label: "I have lived in the UK for 20 years or more",
-        next: "q_funding",
+        next: "q1_long_res_3yr",
       },
       {
-        label: "I have spent more than half of my life in the UK",
-        next: "q_funding",
+        // Page 4: "half of my life" → "half of my age in the UK"
+        label: "I have spent more than half of my age in the UK",
+        next: "q1_long_res_3yr",
+      },
+      {
+        // Page 4: new third option → NOT_ELIGIBLE
+        label: "I have not lived in the UK for 20 years or half of my age in the UK",
+        next: "NOT_ELIGIBLE",
       },
     ],
   },
+
+  // ── Q1_LONG_RES_3YR: 3-year residency check for long-residence path ───────
+  // Page 4: include the 3-year question for the first two long-residence options
+  {
+    id: "q1_long_res_3yr",
+    section: "02",
+    sectionNum: 2,
+    sectionLabel: "UK Residency",
+    question: "Have you been living in the UK for the past 3 years?",
+    options: [
+      { label: "Yes — I have lived in the UK for the last three years", next: "q_degree_type" },
+      { label: "No — I have not lived in the UK for the last three years", next: "NOT_ELIGIBLE" },
+    ],
+  },
+
+  // ── Q1_ILR_RESIDENCY: 3-year check for ILR holders ──────────────────────
   {
     id: "q1_ilr_residency",
     section: "02",
     sectionNum: 2,
     sectionLabel: "UK Residency",
     question: "Have you been living in the UK for the past 3 years?",
-    sub: "This applies to ILR / ILE holders and long-residence applicants.",
     options: [
-      { label: "Yes — I have been in the UK for 3+ years", next: "q_funding" },
-      { label: "No — less than 3 years in the UK", next: "NOT_ELIGIBLE" },
+      { label: "Yes — I have lived in the UK for the last three years", next: "q_degree_type" },
+      { label: "No — I have not lived in the UK for the last three years", next: "NOT_ELIGIBLE" },
     ],
   },
+
+  // ── Q_DEGREE_TYPE: Was/is the student loan for bachelor's or master's? ────
+  // Page 2 & 3: new question added after residency confirmation
   {
-    id: "q_funding",
+    id: "q_degree_type",
     section: "03",
     sectionNum: 3,
     sectionLabel: "Prior Funding",
     question: "Have you previously received a student funding loan?",
-    sub: "This includes any tuition fee loan or maintenance loan you have received in prior years.",
+    sub: "",
     options: [
-      { label: "No — I have never received a student loan", next: "ELIGIBLE" },
+      {
+        label: "No — I have never received a student loan",
+        next: "ELIGIBLE",
+      },
+      {
+        label: "Yes — I have taken student loan for a Bachelor's degree",
+        next: "q_funding_bachelor",
+      },
+      {
+        label: "Yes — I have taken student loan for a Master's degree",
+        next: "q_funding_master",
+      },
+    ],
+  },
+
+  // ── Q_FUNDING_BACHELOR: Prior funding years for bachelor's ───────────────
+  // Page 3: bachelor's → 1yr/2yr/3yr Eligible; 4yr+ Not Eligible
+  {
+    id: "q_funding_bachelor",
+    section: "03",
+    sectionNum: 3,
+    sectionLabel: "Prior Funding",
+    question: "How many years of student funding have you received for your Bachelor's degree?",
+    options: [
       { label: "1 year", next: "ELIGIBLE" },
       { label: "2 years", next: "ELIGIBLE" },
       { label: "3 years", next: "ELIGIBLE" },
@@ -205,18 +313,45 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
+
+  // ── Q_FUNDING_MASTER: Prior funding years for master's ───────────────────
+  // Page 3: master's → 1yr → Not Eligible; 2yr → Not Eligible
+  {
+    id: "q_funding_master",
+    section: "03",
+    sectionNum: 3,
+    sectionLabel: "Prior Funding",
+    question: "How many years of student funding have you received for your Master's degree?",
+    options: [
+      {
+        label: "1 year",
+        sub: "Maximum funding years reached for Master's",
+        next: "NOT_ELIGIBLE",
+      },
+      {
+        label: "2 years or more",
+        sub: "Maximum funding years reached for Master's",
+        next: "NOT_ELIGIBLE",
+      },
+    ],
+  },
 ];
 
 const TOTAL_STEPS = 3;
 const STEP_MAP: Record<string, number> = {
   q1: 1,
   q2: 2,
+  q2_no_reason: 2,
   q2_eu: 2,
+  q2_eu_no_reason: 2,
   q2_settled: 3,
   q1_other: 2,
-  q1_long_residence: 3,
-  q1_ilr_residency: 3,
-  q_funding: 3,
+  q1_long_residence: 2,
+  q1_long_res_3yr: 2,
+  q1_ilr_residency: 2,
+  q_degree_type: 3,
+  q_funding_bachelor: 3,
+  q_funding_master: 3,
 };
 const SECTIONS = [
   { num: 1, label: "Nationality" },
@@ -230,10 +365,18 @@ const SHORT_LABELS: Record<string, string> = {
     "Nationality / Status",
   "Have you been living in the UK for the past 3 years?":
     "UK Residency (3+ years)",
+  "What was the reason you were not in the UK continuously for the last three years?":
+    "Reason for absence",
   "What is your EU Settlement Scheme status?": "EU Settlement Status",
   "Which of these best describes your current status?": "Immigration Status",
   "Which long residence condition applies to you?": "Long Residence Condition",
   "Have you previously received a student funding loan?": "Prior Student Loan",
+  "Have you received a student loan for a Bachelor's or Master's degree?":
+    "Degree Type",
+  "How many years of student funding have you received for your Bachelor's degree?":
+    "Bachelor's Funding Years",
+  "How many years of student funding have you received for your Master's degree?":
+    "Master's Funding Years",
 };
 
 // ── Progress Bar ──────────────────────────────────────────────────────────────
