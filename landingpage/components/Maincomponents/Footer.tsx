@@ -9,6 +9,7 @@ const features = [
   "Supporting students across London and the UK",
   "Connected with trusted education partners",
   "Aligned with Student Finance England processes",
+  "This site is not affiliated with Student Finance England",
 ];
 
 const links = [
@@ -140,10 +141,11 @@ export default function Footer() {
                 Terms & Conditions
               </Link>
               <span className="text-white/15 hidden sm:inline">|</span>
-              <p className="hidden sm:block">Aligned with Student Finance England guidelines.</p>
+              <p className="hidden sm:block">
+                Aligned with Student Finance England guidelines.
+              </p>
             </div>
           </div>
-
         </div>
       </div>
     </footer>
