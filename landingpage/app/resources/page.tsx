@@ -2,7 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, CheckCircle2, Bell, BookOpen, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Bell,
+  BookOpen,
+  Sparkles,
+  GraduationCap,
+  Landmark,
+  Home,
+  Gift,
+  UserCheck,
+  ScrollText,
+  RefreshCcw,
+  ShoppingBag,
+  ClipboardList,
+  HeartHandshake,
+} from "lucide-react";
 
 const LIME = "#D6FD70";
 const BLACK = "#0a0a0a";
@@ -35,7 +51,6 @@ function NewsletterCard() {
         margin: "0 auto",
       }}
     >
-      {/* Lime accent glow behind card */}
       <div
         style={{
           position: "absolute",
@@ -69,7 +84,6 @@ function NewsletterCard() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
-              {/* Label pill */}
               <div style={{ marginBottom: "16px" }}>
                 <span
                   style={{
@@ -115,7 +129,6 @@ function NewsletterCard() {
                 no jargon.
               </p>
 
-              {/* Input + Button row */}
               <div
                 style={{
                   display: "flex",
@@ -295,7 +308,6 @@ function ResourcesHero() {
         padding: "100px 24px 90px",
       }}
     >
-      {/* Lime glow */}
       <div
         style={{
           position: "absolute",
@@ -311,7 +323,6 @@ function ResourcesHero() {
           pointerEvents: "none",
         }}
       />
-      {/* Dot grid */}
       <div
         style={{
           position: "absolute",
@@ -323,7 +334,6 @@ function ResourcesHero() {
         }}
       />
 
-      {/* Floating pills — hidden on mobile */}
       {!isMobile &&
         pills.map((p, i) => (
           <motion.div
@@ -350,7 +360,6 @@ function ResourcesHero() {
           </motion.div>
         ))}
 
-      {/* Text + Newsletter Card */}
       <div
         style={{
           position: "relative",
@@ -394,18 +403,20 @@ function ResourcesHero() {
             margin: "0 0 6px",
           }}
         >
-          Everything you need to <span  style={{
-            fontSize: "clamp(42px, 7vw, 82px)",
-            fontWeight: 800,
-            lineHeight: 1.05,
-            letterSpacing: "-0.03em",
-            color: LIME,
-            margin: "0 0 26px",
-          }}>know.
-            
-          </span >
+          Everything you need to{" "}
+          <span
+            style={{
+              fontSize: "clamp(42px, 7vw, 82px)",
+              fontWeight: 800,
+              lineHeight: 1.05,
+              letterSpacing: "-0.03em",
+              color: LIME,
+              margin: "0 0 26px",
+            }}
+          >
+            know.
+          </span>
         </motion.h1>
-   
 
         <motion.p
           initial={{ opacity: 0, y: 16 }}
@@ -423,7 +434,6 @@ function ResourcesHero() {
           you get, and how to apply without the confusion.
         </motion.p>
 
-        {/* Newsletter Card */}
         <NewsletterCard />
       </div>
     </section>
@@ -434,21 +444,73 @@ function ResourcesHero() {
 function ComingSoonSection() {
   const upcomingTopics = [
     {
-      icon: <BookOpen size={20} />,
-      title: "Maintenance Loan Explained",
-      description: "A full breakdown of how much you can get and what affects your amount.",
+      icon: <GraduationCap size={20} />,
+      title: "Student Finance",
+      description:
+        "Explore funding options, loans, and financial support available for students in higher education.",
       eta: "Coming soon",
     },
     {
-      icon: <Sparkles size={20} />,
-      title: "Tuition Fee Guide 2025",
-      description: "Everything you need to know about fees, repayment, and what it means for you.",
+      icon: <Landmark size={20} />,
+      title: "Tuition Loans",
+      description:
+        "Learn how Tuition Fee Loans help cover your university or college tuition costs.",
       eta: "Coming soon",
     },
     {
-      icon: <Bell size={20} />,
-      title: "Eligibility Checker Walkthrough",
-      description: "Step-by-step: find out if you qualify before you even apply.",
+      icon: <Home size={20} />,
+      title: "Maintenance Loans",
+      description:
+        "Get support for living expenses, accommodation, and everyday student costs while you study.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <Gift size={20} />,
+      title: "Student Grants",
+      description:
+        "Discover non-repayable grants and allowances designed to support eligible students financially.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <UserCheck size={20} />,
+      title: "Mature Students",
+      description:
+        "Find tailored financial guidance and support for students returning to education later in life.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <ScrollText size={20} />,
+      title: "Postgraduate Finance",
+      description:
+        "Explore funding and loan options available for postgraduate and master's degree students.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <RefreshCcw size={20} />,
+      title: "Loan Repayments",
+      description:
+        "Understand when repayments begin, how much you repay, and how the repayment process works.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <ShoppingBag size={20} />,
+      title: "Student Living",
+      description:
+        "Access advice and resources to help manage student life, budgeting, and daily living costs.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <ClipboardList size={20} />,
+      title: "Applications",
+      description:
+        "Learn how to apply for student finance quickly and successfully with step-by-step guidance.",
+      eta: "Coming soon",
+    },
+    {
+      icon: <HeartHandshake size={20} />,
+      title: "Financial Support",
+      description:
+        "Explore additional financial help, grants, and support services available during your studies.",
       eta: "Coming soon",
     },
   ];
@@ -456,7 +518,7 @@ function ComingSoonSection() {
   return (
     <section
       style={{
-        maxWidth: "1000px",
+        maxWidth: "1100px",
         margin: "0 auto",
         padding: "100px 24px 120px",
         fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -470,7 +532,6 @@ function ComingSoonSection() {
         transition={{ duration: 0.5, ease: EASE }}
         style={{ textAlign: "center", marginBottom: "72px" }}
       >
-        {/* Eyebrow */}
         <span
           style={{
             display: "inline-block",
@@ -515,11 +576,11 @@ function ComingSoonSection() {
         </p>
       </motion.div>
 
-      {/* Topic preview cards */}
+      {/* Topic preview cards — 10 blogs in a responsive grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
           gap: "20px",
           marginBottom: "72px",
         }}
@@ -530,7 +591,7 @@ function ComingSoonSection() {
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.1, duration: 0.5, ease: EASE }}
+            transition={{ delay: (i % 4) * 0.08, duration: 0.5, ease: EASE }}
             style={{
               background: WHITE,
               border: "1.5px solid rgba(0,0,0,0.07)",
@@ -566,6 +627,7 @@ function ComingSoonSection() {
                 justifyContent: "center",
                 color: "#5a7a00",
                 marginBottom: "20px",
+                flexShrink: 0,
               }}
             >
               {topic.icon}
@@ -633,7 +695,6 @@ function ComingSoonSection() {
           overflow: "hidden",
         }}
       >
-        {/* Decorative glow */}
         <div
           style={{
             position: "absolute",
@@ -678,7 +739,7 @@ function ComingSoonSection() {
           <Bell size={22} color={LIME} />
         </div>
 
-        <div>
+        <div style={{ width: "100%" }}>
           <h3
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -688,6 +749,7 @@ function ComingSoonSection() {
               letterSpacing: "-0.025em",
               lineHeight: 1.15,
               margin: "0 0 12px",
+              textAlign: "center",
             }}
           >
             Be the first to read them.
@@ -699,12 +761,16 @@ function ComingSoonSection() {
               color: "rgba(255,255,255,0.48)",
               lineHeight: 1.65,
               maxWidth: "400px",
-              margin: "0 auto",
+              margin: "0 auto 32px",
+              textAlign: "center",
             }}
           >
-            Subscribe to the newsletter above and we&apos;ll notify you the moment
-            new guides go live — no spam, just useful stuff.
+            Subscribe below and we&apos;ll notify you the moment new guides go
+            live — no spam, just useful stuff.
           </p>
+
+          {/* Inline newsletter signup */}
+          <NewsletterCard />
         </div>
       </motion.div>
     </section>
