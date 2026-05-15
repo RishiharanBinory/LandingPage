@@ -3,14 +3,14 @@
 import React, { useState, useLayoutEffect, useEffect, useRef } from 'react';
 
 const BASE_CARDS = [
-  { title: "Tuition Fee Loan",  sub: "Up to £9,250/year",  tag: "Most Popular",  type: "light"  },
-  { title: "Maintenance Loan",  sub: "Up to £13,348/year", tag: "Paid to You",   type: "dark"   },
-  { title: "No Certificates?",  sub: "Still may qualify",  tag: "Don't worry",   type: "light"  },
-  { title: "Non-UK Study?",     sub: "Covered in 60s",     tag: "We check this", type: "accent" },
-  { title: "Free Check",        sub: "No obligation",      tag: "Zero cost",     type: "dark"   },
-  { title: "Fast Result",       sub: "Takes 60 seconds",   tag: "Instant",       type: "light"  },
-  { title: "£9,000+",           sub: "Average award",      tag: "Funding",       type: "accent" },
-  { title: "Qualify Today",     sub: "Start your check",   tag: "Apply Now",     type: "light"  },
+  { title: "Tuition Fee Loan",  sub: "Up to £9,250/year",  type: "light"  },
+  { title: "Maintenance Loan",  sub: "Up to £14,000+/year", type: "dark"   },
+  { title: "No Certificates?",  sub: "Still may qualify",  type: "light"  },
+  { title: "Non-UK Study?",     sub: "Covered in 60s",     type: "accent" },
+  { title: "Free Check",        sub: "No obligation",      type: "dark"   },
+  { title: "Fast Result",       sub: "Takes 60 seconds",   type: "light"  },
+  { title: "£9,000+",           sub: "Average award",      type: "accent" },
+  { title: "Qualify Today",     sub: "Start your check",   type: "light"  },
 ];
 
 const ORBIT_CARDS = [...BASE_CARDS, ...BASE_CARDS];
@@ -138,8 +138,6 @@ function MobileCarousel() {
         WebkitUserSelect: 'none',
       }}
     >
-      {/* ✅ Fade overlays REMOVED — no more white shades on left/right */}
-
       <div
         ref={trackRef}
         style={{
@@ -158,10 +156,6 @@ function MobileCarousel() {
             ? '0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px #2e2e2e'
             : '0 2px 12px rgba(0,0,0,0.08)';
 
-          const tagBg  = isDark ? '#2a2a2a' : '#D6FD70';
-          const tagC   = isDark ? '#D6FD70' : '#111111';
-          const tagBdr = isDark ? '1px solid #3d3d3d' : 'none';
-
           const titleC = isDark ? '#f0f0f0' : '#0a0a0a';
           const subC   = isDark ? '#888888' : 'rgba(0,0,0,0.50)';
 
@@ -179,49 +173,33 @@ function MobileCarousel() {
                   boxSizing: 'border-box',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-between',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   background: bg,
                   border,
                   boxShadow: shadow,
                 }}
               >
-                <div>
-                  <span style={{
-                    display: 'inline-block',
-                    background: tagBg,
-                    color: tagC,
-                    border: tagBdr,
-                    fontSize: 8,
-                    fontWeight: 800,
-                    padding: '3px 8px',
-                    borderRadius: 99,
-                    letterSpacing: '0.06em',
-                    textTransform: 'uppercase',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {card.tag}
-                  </span>
-                </div>
-                <div>
-                  <p style={{
-                    margin: '0 0 4px',
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: titleC,
-                    lineHeight: 1.25,
-                  }}>
-                    {card.title}
-                  </p>
-                  <p style={{
-                    margin: 0,
-                    fontSize: 11,
-                    fontWeight: 400,
-                    color: subC,
-                    lineHeight: 1.4,
-                  }}>
-                    {card.sub}
-                  </p>
-                </div>
+                <p style={{
+                  margin: '0 0 6px',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: titleC,
+                  lineHeight: 1.25,
+                  textAlign: 'center',
+                }}>
+                  {card.title}
+                </p>
+                <p style={{
+                  margin: 0,
+                  fontSize: 11,
+                  fontWeight: 400,
+                  color: subC,
+                  lineHeight: 1.4,
+                  textAlign: 'center',
+                }}>
+                  {card.sub}
+                </p>
               </div>
             </div>
           );
@@ -307,10 +285,6 @@ function DesktopOrbit() {
             ? '0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px #2e2e2e'
             : '0 2px 12px rgba(0,0,0,0.10)';
 
-          const tagBg  = isDark ? '#2a2a2a' : '#D6FD70';
-          const tagC   = isDark ? '#D6FD70' : '#111111';
-          const tagBdr = isDark ? '1px solid #3d3d3d' : 'none';
-
           const titleC = isDark ? '#f0f0f0' : '#0a0a0a';
           const subC   = isDark ? '#888888' : 'rgba(0,0,0,0.48)';
 
@@ -337,45 +311,29 @@ function DesktopOrbit() {
                 padding: 12,
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
+                alignItems: 'center',
                 boxShadow: shadow,
               }}>
-                <div>
-                  <span style={{
-                    display: 'inline-block',
-                    background: tagBg,
-                    color: tagC,
-                    border: tagBdr,
-                    fontSize: 7,
-                    fontWeight: 800,
-                    padding: '3px 7px',
-                    borderRadius: 99,
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {card.tag}
-                  </span>
-                </div>
-                <div>
-                  <p style={{
-                    margin: '0 0 3px',
-                    fontSize: 12.5,
-                    fontWeight: 700,
-                    color: titleC,
-                    lineHeight: 1.2,
-                  }}>
-                    {card.title}
-                  </p>
-                  <p style={{
-                    margin: 0,
-                    fontSize: 10,
-                    fontWeight: 400,
-                    color: subC,
-                  }}>
-                    {card.sub}
-                  </p>
-                </div>
+                <p style={{
+                  margin: '0 0 5px',
+                  fontSize: 12.5,
+                  fontWeight: 700,
+                  color: titleC,
+                  lineHeight: 1.2,
+                  textAlign: 'center',
+                }}>
+                  {card.title}
+                </p>
+                <p style={{
+                  margin: 0,
+                  fontSize: 10,
+                  fontWeight: 400,
+                  color: subC,
+                  textAlign: 'center',
+                }}>
+                  {card.sub}
+                </p>
               </div>
             </div>
           );
@@ -388,15 +346,12 @@ function DesktopOrbit() {
 // ─── Root Component ───────────────────────────────────────────────────────────
 
 export default function CardOrbitCarousel() {
-  // ✅ Fix: initialise both pieces of state together using a lazy initialiser
-  // so neither setState call happens synchronously inside an effect body.
   const [{ isMobile, mounted }, setLayout] = useState<{
     isMobile: boolean;
     mounted: boolean;
   }>({ isMobile: false, mounted: false });
 
   useLayoutEffect(() => {
-    // ✅ Single setState call — no cascading renders, no lint warning
     const check = () =>
       setLayout({ isMobile: window.innerWidth < 768, mounted: true });
 

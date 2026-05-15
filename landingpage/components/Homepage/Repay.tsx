@@ -13,11 +13,11 @@ const points = [
   },
   {
     icon: <TrendingUp size={20} stroke="#000" strokeWidth={2} />,
-    text: "If you earn £30,000 → that's roughly £5/month",
+    text: "If you earn £30,000 → that's roughly £37.50/month",
   },
   {
     icon: <Clock size={20} stroke="#000" strokeWidth={2} />,
-    text: "No repayments until after your course and when you're earning",
+    text: "No repayments while you study or if you’re not earning",
   },
 ];
 
@@ -28,7 +28,6 @@ export default function RepaymentsSection() {
       style={{ fontFamily: "var(--font-plus-jakarta)" }}
     >
       <div className="max-w-[700px] mx-auto flex flex-col items-center text-center gap-5">
-
         {/* Heading */}
         <motion.h2
           style={{
@@ -44,18 +43,24 @@ export default function RepaymentsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: EASE, delay: 0.05 }}
         >
-         Worried about taking a loan?
+          Worried about taking a loan?
         </motion.h2>
 
         {/* Sub */}
         <motion.p
-          style={{ fontSize: "18px", color: "#888", lineHeight: 1.7, margin: 0 }}
+          style={{
+            fontSize: "18px",
+            color: "#888",
+            lineHeight: 1.7,
+            margin: 0,
+          }}
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          You don’t pay a fixed amount, only what you can afford based on your income.
+          You don’t pay a fixed amount, only what you can afford based on your
+          income.
         </motion.p>
 
         {/* Points */}
@@ -66,7 +71,11 @@ export default function RepaymentsSection() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.12 + 0.15, duration: 0.52, ease: EASE }}
+              transition={{
+                delay: i * 0.12 + 0.15,
+                duration: 0.52,
+                ease: EASE,
+              }}
               style={{
                 background: "#f7f7f5",
                 borderRadius: "18px",
@@ -94,7 +103,15 @@ export default function RepaymentsSection() {
               </div>
 
               {/* Text */}
-              <p style={{ fontSize: "16px", fontWeight: 500, color: "#0a0a0a", margin: 0, lineHeight: 1.5 }}>
+              <p
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  color: "#0a0a0a",
+                  margin: 0,
+                  lineHeight: 1.5,
+                }}
+              >
                 {point.text}
               </p>
             </motion.div>
@@ -107,7 +124,12 @@ export default function RepaymentsSection() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          style={{ fontSize: "16px", fontWeight: 700, color: "#0a0a0a", margin: 0 }}
+          style={{
+            fontSize: "16px",
+            fontWeight: 700,
+            color: "#0a0a0a",
+            margin: 0,
+          }}
         >
           You&apos;re not taking a risk upfront.
         </motion.p>

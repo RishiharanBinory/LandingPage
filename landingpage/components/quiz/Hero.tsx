@@ -89,8 +89,14 @@ const QUESTIONS: Question[] = [
     // Page 2: remove the sub description below the question
     options: [
       // Page 2: rephrase options
-      { label: "Yes — I have lived in the UK for the last three years", next: "q_degree_type" },
-      { label: "No — I have not lived in the UK for the last three years", next: "q2_no_reason" },
+      {
+        label: "Yes — I have lived in the UK for the last three years",
+        next: "q_degree_type",
+      },
+      {
+        label: "No — I have not lived in the UK for the last three years",
+        next: "q2_no_reason",
+      },
     ],
   },
 
@@ -100,7 +106,8 @@ const QUESTIONS: Question[] = [
     section: "02",
     sectionNum: 2,
     sectionLabel: "UK Residency",
-    question: "What was the reason you were not in the UK continuously for the last three years?",
+    question:
+      "What was the reason you were not in the UK continuously for the last three years?",
     options: [
       {
         label: "Work or study abroad",
@@ -124,8 +131,14 @@ const QUESTIONS: Question[] = [
     question: "Have you been living in the UK for the past 3 years?",
     // Page 2: remove sub
     options: [
-      { label: "Yes — I have lived in the UK for the last three years", next: "q2_settled" },
-      { label: "No — I have not lived in the UK for the last three years", next: "q2_eu_no_reason" },
+      {
+        label: "Yes — I have lived in the UK for the last three years",
+        next: "q2_settled",
+      },
+      {
+        label: "No — I have not lived in the UK for the last three years",
+        next: "q2_eu_no_reason",
+      },
     ],
   },
 
@@ -135,7 +148,8 @@ const QUESTIONS: Question[] = [
     section: "02",
     sectionNum: 2,
     sectionLabel: "UK Residency",
-    question: "What was the reason you were not in the UK continuously for the last three years?",
+    question:
+      "What was the reason you were not in the UK continuously for the last three years?",
     options: [
       {
         label: "Work or study abroad",
@@ -161,7 +175,7 @@ const QUESTIONS: Question[] = [
     options: [
       {
         label: "Settled Status",
-        sub: "You have been granted full settled status under the EU Settlement Scheme",
+        sub: "You have been granted full settled status under the EU Settlement Scheme / other",
         next: "q_degree_type",
       },
       {
@@ -191,7 +205,8 @@ const QUESTIONS: Question[] = [
       { label: "Refugee or family member of a refugee", next: "q_degree_type" },
       {
         // Page 4: "Irish citizen" → "Irish National"; capitalise
-        label: "Family member of a UK National, Irish National, or settled-status holder",
+        label:
+          "Family member of a UK National, Irish National, or settled-status holder",
         next: "q_degree_type",
       },
       {
@@ -222,7 +237,7 @@ const QUESTIONS: Question[] = [
     sectionNum: 1,
     sectionLabel: "Long Residence",
     question: "Which long residence condition applies to you?",
-    sub: "You only need to meet one of these two conditions.",
+    sub: "You only need to meet one of these three conditions.",
     options: [
       {
         // Page 4: leads to 3-year residency check first
@@ -236,7 +251,8 @@ const QUESTIONS: Question[] = [
       },
       {
         // Page 4: new third option → NOT_ELIGIBLE
-        label: "I have not lived in the UK for 20 years or half of my age in the UK",
+        label:
+          "I have not lived in the UK for 20 years or half of my age in the UK",
         next: "NOT_ELIGIBLE",
       },
     ],
@@ -251,8 +267,14 @@ const QUESTIONS: Question[] = [
     sectionLabel: "UK Residency",
     question: "Have you been living in the UK for the past 3 years?",
     options: [
-      { label: "Yes — I have lived in the UK for the last three years", next: "q_degree_type" },
-      { label: "No — I have not lived in the UK for the last three years", next: "NOT_ELIGIBLE" },
+      {
+        label: "Yes — I have lived in the UK for the last three years",
+        next: "q_degree_type",
+      },
+      {
+        label: "No — I have not lived in the UK for the last three years",
+        next: "NOT_ELIGIBLE",
+      },
     ],
   },
 
@@ -264,8 +286,14 @@ const QUESTIONS: Question[] = [
     sectionLabel: "UK Residency",
     question: "Have you been living in the UK for the past 3 years?",
     options: [
-      { label: "Yes — I have lived in the UK for the last three years", next: "q_degree_type" },
-      { label: "No — I have not lived in the UK for the last three years", next: "NOT_ELIGIBLE" },
+      {
+        label: "Yes — I have lived in the UK for the last three years",
+        next: "q_degree_type",
+      },
+      {
+        label: "No — I have not lived in the UK for the last three years",
+        next: "NOT_ELIGIBLE",
+      },
     ],
   },
 
@@ -276,7 +304,7 @@ const QUESTIONS: Question[] = [
     section: "03",
     sectionNum: 3,
     sectionLabel: "Prior Funding",
-    question: "Have you previously received a student funding loan?",
+    question: "Have you previously received a student loan’?",
     sub: "",
     options: [
       {
@@ -301,7 +329,8 @@ const QUESTIONS: Question[] = [
     section: "03",
     sectionNum: 3,
     sectionLabel: "Prior Funding",
-    question: "How many years of student funding have you received for your Bachelor's degree?",
+    question:
+      "How many years of student funding have you received for your Bachelor's degree?",
     options: [
       { label: "1 year", next: "ELIGIBLE" },
       { label: "2 years", next: "ELIGIBLE" },
@@ -321,15 +350,16 @@ const QUESTIONS: Question[] = [
     section: "03",
     sectionNum: 3,
     sectionLabel: "Prior Funding",
-    question: "How many years of student funding have you received for your Master's degree?",
+    question:
+      "How many years of student funding have you received for your Master's degree?",
     options: [
       {
-        label: "1 year",
+        label: "One year or lesser",
         sub: "Maximum funding years reached for Master's",
         next: "NOT_ELIGIBLE",
       },
       {
-        label: "2 years or more",
+        label: "Two years or more",
         sub: "Maximum funding years reached for Master's",
         next: "NOT_ELIGIBLE",
       },
@@ -370,7 +400,7 @@ const SHORT_LABELS: Record<string, string> = {
   "What is your EU Settlement Scheme status?": "EU Settlement Status",
   "Which of these best describes your current status?": "Immigration Status",
   "Which long residence condition applies to you?": "Long Residence Condition",
-  "Have you previously received a student funding loan?": "Prior Student Loan",
+  "Have you previously received a student loan’?": "Prior Student Loan",
   "Have you received a student loan for a Bachelor's or Master's degree?":
     "Degree Type",
   "How many years of student funding have you received for your Bachelor's degree?":

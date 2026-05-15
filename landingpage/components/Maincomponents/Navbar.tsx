@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
@@ -114,15 +113,14 @@ export default function Navbar() {
               alignItems: "center",
               justifyContent: "space-between",
               height: "62px",
-              // When open on mobile: square bottom corners so it merges with dropdown
               borderRadius: open ? "20px 20px 0 0" : "0 0 20px 20px",
               background: "#ffffff",
               boxShadow: open
-                ? "0 0 0 rgba(0,0,0,0)"           // no shadow when open — unified block
+                ? "0 0 0 rgba(0,0,0,0)"
                 : "0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)",
               border: "1px solid rgba(0,0,0,0.06)",
               borderTop: "none",
-              borderBottom: open ? "1px solid rgba(0,0,0,0.06)" : "1px solid rgba(0,0,0,0.06)",
+              borderBottom: "1px solid rgba(0,0,0,0.06)",
               padding: "0 12px 0 20px",
               transition: "border-radius 0.2s ease, box-shadow 0.2s ease",
               position: "relative",
@@ -130,7 +128,8 @@ export default function Navbar() {
             }}
           >
             {/* Logo */}
-            <Link
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a
               href="/"
               style={{
                 display: "flex",
@@ -166,12 +165,13 @@ export default function Navbar() {
               >
                 Eligiby
               </span>
-            </Link>
+            </a>
 
             {/* Desktop links */}
             <div className="hidden md:flex" style={{ alignItems: "center", gap: "2px" }}>
               {links.map((link) => (
-                <Link
+                // eslint-disable-next-line @next/next/no-html-link-for-pages
+                <a
                   key={link.label}
                   href={link.href}
                   style={{
@@ -185,17 +185,17 @@ export default function Navbar() {
                     letterSpacing: "0.01em",
                     whiteSpace: "nowrap",
                   }}
-                  onMouseEnter={(e) => {
-                    (e.target as HTMLElement).style.background = "rgba(0,0,0,0.05)";
-                    (e.target as HTMLElement).style.color = "#0a0a0a";
+                  onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.currentTarget.style.background = "rgba(0,0,0,0.05)";
+                    e.currentTarget.style.color = "#0a0a0a";
                   }}
-                  onMouseLeave={(e) => {
-                    (e.target as HTMLElement).style.background = "transparent";
-                    (e.target as HTMLElement).style.color = "rgba(10,10,10,0.65)";
+                  onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "rgba(10,10,10,0.65)";
                   }}
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
             </div>
 
@@ -224,7 +224,7 @@ export default function Navbar() {
             </button>
           </nav>
 
-          {/* Mobile dropdown — sits directly below nav, shares the same container width */}
+          {/* Mobile dropdown */}
           <div
             className="md:hidden"
             style={{
@@ -233,7 +233,6 @@ export default function Navbar() {
               transition: "max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               background: "#ffffff",
               borderRadius: "0 0 20px 20px",
-              // Only show side + bottom border, top handled by nav border-bottom
               boxShadow: open
                 ? "0 8px 32px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.05)"
                 : "none",
@@ -245,7 +244,8 @@ export default function Navbar() {
           >
             <div style={{ display: "flex", flexDirection: "column", padding: "6px 12px 14px" }}>
               {links.map((link, i) => (
-                <Link
+                // eslint-disable-next-line @next/next/no-html-link-for-pages
+                <a
                   key={link.label}
                   href={link.href}
                   onClick={() => setOpen(false)}
@@ -260,15 +260,15 @@ export default function Navbar() {
                     borderBottom:
                       i < links.length - 1 ? "1px solid rgba(0,0,0,0.05)" : "none",
                   }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(0,0,0,0.04)";
+                  onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.currentTarget.style.background = "rgba(0,0,0,0.04)";
                   }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
+                  onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.currentTarget.style.background = "transparent";
                   }}
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
             </div>
           </div>

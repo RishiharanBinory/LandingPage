@@ -87,7 +87,7 @@ export default function HeroSection() {
               margin: "0 auto",
             }}
           >
-            Check if you qualify for Student Finance in the UK <br />
+            Check Your Eligibility for UK Student Finance <br />
             <span style={{ color: "#D6FD70" }}>In 60 Seconds!</span>
           </motion.h1>
 
@@ -114,7 +114,7 @@ export default function HeroSection() {
             </span>{" "}
             and receive up to{" "}
             <span style={{ fontWeight: 600 }}>
-              £13,000 per year paid directly to you.
+              £14,000+ per year paid directly to you.
             </span>
           </motion.p>
 
