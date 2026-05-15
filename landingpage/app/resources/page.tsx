@@ -31,6 +31,14 @@ function NewsletterCard() {
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState(false);
   const [btnHovered, setBtnHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 600);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -71,7 +79,7 @@ function NewsletterCard() {
           WebkitBackdropFilter: "blur(18px)",
           border: "1.5px solid rgba(255,255,255,0.13)",
           borderRadius: "20px",
-          padding: "36px 40px",
+          padding: isMobile ? "28px 24px" : "36px 40px",
           boxShadow: "0 8px 40px rgba(0,0,0,0.35)",
         }}
       >
@@ -129,9 +137,11 @@ function NewsletterCard() {
                 no jargon.
               </p>
 
+              {/* Stack vertically on mobile, side-by-side on desktop */}
               <div
                 style={{
                   display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
                   gap: "10px",
                   alignItems: "stretch",
                 }}
@@ -173,6 +183,7 @@ function NewsletterCard() {
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
+                    justifyContent: "center",
                     gap: "8px",
                     padding: "13px 22px",
                     borderRadius: "12px",
@@ -190,9 +201,12 @@ function NewsletterCard() {
                     color: isValid ? BLACK : "rgba(255,255,255,0.3)",
                     transition:
                       "background 0.2s ease, color 0.2s ease, transform 0.15s ease",
-                    transform: btnHovered && isValid ? "scale(1.03)" : "scale(1)",
+                    transform:
+                      btnHovered && isValid ? "scale(1.03)" : "scale(1)",
                     whiteSpace: "nowrap",
                     flexShrink: 0,
+                    // On mobile, full width button
+                    width: isMobile ? "100%" : "auto",
                   }}
                 >
                   Subscribe
