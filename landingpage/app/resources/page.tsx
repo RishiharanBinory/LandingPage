@@ -137,7 +137,6 @@ function NewsletterCard() {
                 no jargon.
               </p>
 
-              {/* Stack vertically on mobile, side-by-side on desktop */}
               <div
                 style={{
                   display: "flex",
@@ -205,7 +204,6 @@ function NewsletterCard() {
                       btnHovered && isValid ? "scale(1.03)" : "scale(1)",
                     whiteSpace: "nowrap",
                     flexShrink: 0,
-                    // On mobile, full width button
                     width: isMobile ? "100%" : "auto",
                   }}
                 >
@@ -456,6 +454,16 @@ function ResourcesHero() {
 
 // ─── Coming Soon Section ──────────────────────────────────────────
 function ComingSoonSection() {
+  // ✅ FIX: Add isMobile state here so we can adjust CTA padding
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 600);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const upcomingTopics = [
     {
       icon: <GraduationCap size={20} />,
@@ -590,7 +598,7 @@ function ComingSoonSection() {
         </p>
       </motion.div>
 
-      {/* Topic preview cards — 10 blogs in a responsive grid */}
+      {/* Topic preview cards */}
       <div
         style={{
           display: "grid",
@@ -615,7 +623,6 @@ function ComingSoonSection() {
               overflow: "hidden",
             }}
           >
-            {/* Subtle lime corner accent */}
             <div
               style={{
                 position: "absolute",
@@ -628,7 +635,6 @@ function ComingSoonSection() {
               }}
             />
 
-            {/* Icon */}
             <div
               style={{
                 width: "44px",
@@ -670,7 +676,6 @@ function ComingSoonSection() {
               {topic.description}
             </p>
 
-            {/* ETA pill */}
             <span
               style={{
                 display: "inline-block",
@@ -699,7 +704,9 @@ function ComingSoonSection() {
         style={{
           background: BLACK,
           borderRadius: "24px",
-          padding: "56px 48px",
+          // ✅ FIX: Use 20px horizontal padding on mobile (matches hero's 24px)
+          // instead of 48px which was squishing the NewsletterCard
+          padding: isMobile ? "48px 20px" : "56px 48px",
           display: "flex",
           flexDirection: "column" as const,
           alignItems: "center",
@@ -783,8 +790,17 @@ function ComingSoonSection() {
             live — no spam, just useful stuff.
           </p>
 
-          {/* Inline newsletter signup */}
-          <NewsletterCard />
+          {/* ✅ FIX: Wrap in a full-width flex container so the card
+              expands to fill available space identically to the hero */}
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <NewsletterCard />
+          </div>
         </div>
       </motion.div>
     </section>

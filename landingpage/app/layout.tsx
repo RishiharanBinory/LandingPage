@@ -31,7 +31,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PrimeLeed — Student Finance UK",
+  title: "eligibilty checker UK",
   description: "Check if you qualify for UK Student Finance in 60 seconds.",
 };
 

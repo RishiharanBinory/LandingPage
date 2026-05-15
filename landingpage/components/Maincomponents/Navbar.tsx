@@ -118,9 +118,10 @@ export default function Navbar() {
               boxShadow: open
                 ? "0 0 0 rgba(0,0,0,0)"
                 : "0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)",
-              border: "1px solid rgba(0,0,0,0.06)",
               borderTop: "none",
+              borderRight: "1px solid rgba(0,0,0,0.06)",
               borderBottom: "1px solid rgba(0,0,0,0.06)",
+              borderLeft: "1px solid rgba(0,0,0,0.06)",
               padding: "0 12px 0 20px",
               transition: "border-radius 0.2s ease, box-shadow 0.2s ease",
               position: "relative",
@@ -168,7 +169,10 @@ export default function Navbar() {
             </a>
 
             {/* Desktop links */}
-            <div className="hidden md:flex" style={{ alignItems: "center", gap: "2px" }}>
+            <div
+              className="hidden md:flex"
+              style={{ alignItems: "center", gap: "2px" }}
+            >
               {links.map((link) => (
                 // eslint-disable-next-line @next/next/no-html-link-for-pages
                 <a
@@ -236,13 +240,21 @@ export default function Navbar() {
               boxShadow: open
                 ? "0 8px 32px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.05)"
                 : "none",
-              border: open ? "1px solid rgba(0,0,0,0.06)" : "none",
               borderTop: "none",
+              borderRight: open ? "1px solid rgba(0,0,0,0.06)" : "none",
+              borderBottom: open ? "1px solid rgba(0,0,0,0.06)" : "none",
+              borderLeft: open ? "1px solid rgba(0,0,0,0.06)" : "none",
               position: "relative",
               zIndex: 1,
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", padding: "6px 12px 14px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "6px 12px 14px",
+              }}
+            >
               {links.map((link, i) => (
                 // eslint-disable-next-line @next/next/no-html-link-for-pages
                 <a
@@ -258,7 +270,9 @@ export default function Navbar() {
                     borderRadius: "12px",
                     transition: "background 0.15s",
                     borderBottom:
-                      i < links.length - 1 ? "1px solid rgba(0,0,0,0.05)" : "none",
+                      i < links.length - 1
+                        ? "1px solid rgba(0,0,0,0.05)"
+                        : "none",
                   }}
                   onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.currentTarget.style.background = "rgba(0,0,0,0.04)";
