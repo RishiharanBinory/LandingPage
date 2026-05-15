@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -111,14 +110,15 @@ export default function Footer() {
                 Navigation
               </p>
               {links.map((link) => (
-                <Link
+                // eslint-disable-next-line @next/next/no-html-link-for-pages
+                <a
                   key={link.label}
                   href={link.href}
                   className="text-white/70 hover:text-white transition-colors duration-200 font-medium"
                   style={{ fontSize: "24px" }}
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
             </motion.div>
           </div>
@@ -127,19 +127,19 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-6 text-[13px] text-white/30">
             <p>© {new Date().getFullYear()} Eligiby. All rights reserved.</p>
             <div className="flex items-center gap-5">
-              {/* <Link
+              {/* <a
                 href="/privacy-policy"
                 className="hover:text-white/70 transition-colors duration-200"
               >
                 Privacy Policy
-              </Link>
+              </a>
               <span className="text-white/15">|</span>
-              <Link
+              <a
                 href="/terms-and-conditions"
                 className="hover:text-white/70 transition-colors duration-200"
               >
                 Terms & Conditions
-              </Link> */}
+              </a> */}
               <span className="text-white/15 hidden sm:inline">|</span>
               <p className="hidden sm:block">
                 Aligned with Student Finance England guidelines.
