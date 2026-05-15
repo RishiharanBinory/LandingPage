@@ -36,7 +36,7 @@ const cards: Card[] = [
     id: "maintenance",
     icon: <Home size={20} stroke="#000" strokeWidth={2} />,
     label: "Maintenance Loan",
-    description: "Up to £13,762/year , paid directly to you",
+    description: "Up to £14,000/year , paid directly to you",
     image: "/img2.png",
   },
   {
@@ -83,7 +83,11 @@ export default function StudentFinanceSection() {
         {/* Gray wrapper */}
         <motion.div
           className="w-full"
-          style={{ background: "#f5f5f3", borderRadius: "24px", padding: "12px" }}
+          style={{
+            background: "#f5f5f3",
+            borderRadius: "24px",
+            padding: "12px",
+          }}
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -122,7 +126,8 @@ export default function StudentFinanceSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.55, duration: 0.5 }}
         >
-          You don&apos;t pay anything until you&apos;re earning above the threshold,{" "}
+          You don&apos;t pay anything until you&apos;re earning above the
+          threshold,{" "}
           <span className="text-[#0a0a0a] font-bold">
             and the loan is written off after 40 years.
           </span>
@@ -140,38 +145,78 @@ export default function StudentFinanceSection() {
    - Image fills the right ~55% — always visible, no interaction needed
    - Inset image margin matches desktop's polished look
 ───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   ONLY REPLACE the MobileFinanceCard function in your file.
+   Everything else (imports, cards data, StudentFinanceSection,
+   FinanceCard) stays exactly the same.
+───────────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────────
+   MOBILE CARD  — stacked layout (image top, content below)
+   
+   WHY the old side-by-side layout failed:
+   - 45% left column → ~185px wide on a 412px screen
+   - Label "Tuition Fee Loan" forced to wrap at ~10ch
+   - Description was 3 lines crammed into that narrow slot
+   - minHeight 220px made everything feel suffocated
+   
+   NEW approach:
+   - Full-width card, image on top (16:9 ratio, fixed height)
+   - Icon, label, description get 100% of the width → no wrapping
+   - Generous padding so nothing ever touches an edge
+   - Subtle accent left-border on the content area for visual rhythm
+───────────────────────────────────────────────────────────── */
 function MobileFinanceCard({ card, index }: { card: Card; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.45, ease: EASE, delay: index * 0.08 }}
+      transition={{ duration: 0.45, ease: EASE, delay: index * 0.1 }}
       style={{
         background: "#fff",
-        borderRadius: "10px",
+        borderRadius: "14px",
         overflow: "hidden",
         display: "flex",
-        flexDirection: "row",
-        minHeight: "220px",
+        flexDirection: "column",
+        padding: "12px",
       }}
     >
-      {/* LEFT — icon top, text bottom */}
+      {/* IMAGE */}
       <div
         style={{
+          position: "relative",
+          width: "100%",
+          height: "200px",
+          flexShrink: 0,
+          borderRadius: "10px",
+          overflow: "hidden",
+        }}
+      >
+        <Image
+          src={card.image}
+          alt={card.label}
+          fill
+          className="object-cover object-top"
+          priority={index === 0}
+        />
+      </div>
+
+      {/* CONTENT */}
+      <div
+        style={{
+          padding: "16px 4px 8px",  /* ← no left offset, clean alignment */
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "20px",
-          flex: "0 0 45%",
-          minWidth: 0,
+          gap: "8px",
+          /* ← border-left removed entirely */
         }}
       >
         {/* Icon */}
         <div
           style={{
-            width: 38,
-            height: 38,
+            width: 40,
+            height: 40,
             borderRadius: 11,
             background: ACCENT,
             display: "flex",
@@ -183,49 +228,30 @@ function MobileFinanceCard({ card, index }: { card: Card; index: number }) {
           {card.icon}
         </div>
 
-        {/* Label + description pinned to bottom */}
-        <div>
-          <p
-            style={{
-              fontSize: "20px",
-              fontWeight: 600,
-              color: "#0a0a0a",
-              marginBottom: 6,
-              lineHeight: 1.2,
-            }}
-          >
-            {card.label}
-          </p>
-          <p
-            style={{
-              fontSize: "14px",
-              color: "#888",
-              lineHeight: 1.5,
-              margin: 0,
-            }}
-          >
-            {card.description}
-          </p>
-        </div>
-      </div>
+        {/* Label */}
+        <p
+          style={{
+            fontSize: "20px",
+            fontWeight: 700,
+            color: "#0a0a0a",
+            lineHeight: 1.2,
+            margin: 0,
+          }}
+        >
+          {card.label}
+        </p>
 
-      {/* RIGHT — image always visible, inset to match desktop style */}
-      <div
-        style={{
-          flex: "0 0 55%",
-          position: "relative",
-          margin: "10px 10px 10px 0",
-          borderRadius: "8px",
-          overflow: "hidden",
-        }}
-      >
-        <Image
-          src={card.image}
-          alt={card.label}
-          fill
-          className="object-cover object-center"
-          priority={index === 0}
-        />
+        {/* Description */}
+        <p
+          style={{
+            fontSize: "14px",
+            color: "#666",
+            lineHeight: 1.6,
+            margin: 0,
+          }}
+        >
+          {card.description}
+        </p>
       </div>
     </motion.div>
   );
@@ -234,7 +260,12 @@ function MobileFinanceCard({ card, index }: { card: Card; index: number }) {
 /* ─────────────────────────────────────────────────────────────
    DESKTOP CARD — horizontal accordion, completely unchanged
 ───────────────────────────────────────────────────────────── */
-function FinanceCard({ card, index, isActive, onMouseEnter }: FinanceCardProps) {
+function FinanceCard({
+  card,
+  index,
+  isActive,
+  onMouseEnter,
+}: FinanceCardProps) {
   return (
     <div
       onMouseEnter={onMouseEnter}
@@ -252,7 +283,12 @@ function FinanceCard({ card, index, isActive, onMouseEnter }: FinanceCardProps) 
       {/* LEFT: text */}
       <div
         className="flex flex-col justify-between"
-        style={{ padding: "24px", flexShrink: 0, width: "220px", minWidth: "60px" }}
+        style={{
+          padding: "24px",
+          flexShrink: 0,
+          width: "220px",
+          minWidth: "60px",
+        }}
       >
         <div
           style={{
@@ -270,10 +306,25 @@ function FinanceCard({ card, index, isActive, onMouseEnter }: FinanceCardProps) 
         </div>
 
         <div>
-          <p style={{ fontSize: "24px", fontWeight: 500, color: "#0a0a0a", marginBottom: 8, lineHeight: 1.2 }}>
+          <p
+            style={{
+              fontSize: "24px",
+              fontWeight: 500,
+              color: "#0a0a0a",
+              marginBottom: 8,
+              lineHeight: 1.2,
+            }}
+          >
             {card.label}
           </p>
-          <p style={{ fontSize: "16px", color: "#888", lineHeight: 1.5, margin: 0 }}>
+          <p
+            style={{
+              fontSize: "16px",
+              color: "#888",
+              lineHeight: 1.5,
+              margin: 0,
+            }}
+          >
             {card.description}
           </p>
         </div>
@@ -292,7 +343,15 @@ function FinanceCard({ card, index, isActive, onMouseEnter }: FinanceCardProps) 
           borderRadius: "8px",
         }}
       >
-        <div style={{ position: "relative", width: "100%", height: "100%", borderRadius: "8px", overflow: "hidden" }}>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            borderRadius: "8px",
+            overflow: "hidden",
+          }}
+        >
           <Image
             src={card.image}
             alt={card.label}
