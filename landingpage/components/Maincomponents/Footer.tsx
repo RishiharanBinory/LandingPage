@@ -127,7 +127,7 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-6 text-[13px] text-white/30">
             <p>© {new Date().getFullYear()} Eligiby. All rights reserved.</p>
             <div className="flex items-center gap-5">
-              <Link
+              {/* <Link
                 href="/privacy-policy"
                 className="hover:text-white/70 transition-colors duration-200"
               >
@@ -139,7 +139,7 @@ export default function Footer() {
                 className="hover:text-white/70 transition-colors duration-200"
               >
                 Terms & Conditions
-              </Link>
+              </Link> */}
               <span className="text-white/15 hidden sm:inline">|</span>
               <p className="hidden sm:block">
                 Aligned with Student Finance England guidelines.
