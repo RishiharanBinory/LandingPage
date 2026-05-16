@@ -862,6 +862,10 @@ function ReviewScreen({
 // ── Unlock Screen — more prominent version ────────────────────────────────────
 // REPLACE the existing UnlockScreen function in your EligibilityQuizPage file
 
+// ── Unlock Screen — Final Production Version ─────────────────────────────────
+// Drop-in replacement for the existing UnlockScreen function.
+// All dependencies (motion, EASE, SPRING) are already present in your file.
+
 function UnlockScreen({
   onUnlock,
   onBack,
@@ -870,283 +874,488 @@ function UnlockScreen({
   onBack: () => void;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: EASE }}
-      className="flex flex-col gap-0 max-w-xl mx-auto w-full"
-    >
-      {/* Badge */}
-      <div className="flex items-center gap-2 mb-5">
-        <div
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full"
-          style={{ background: "#0a0a0a" }}
+    <>
+      {/* ── Scoped styles ── */}
+      <style>{`
+        .us-wrap {
+          font-family: var(--font-plus-jakarta), sans-serif;
+          max-width: 560px;
+          margin: 0 auto;
+          width: 100%;
+        }
+
+        /* Badge */
+        .us-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          background: #0a0a0a;
+          border-radius: 999px;
+          padding: 6px 14px 6px 8px;
+          margin-bottom: 20px;
+        }
+        .us-badge-dot {
+          width: 18px; height: 18px;
+          border-radius: 50%;
+          background: #D6FD70;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+        }
+        .us-badge span {
+          font-size: 11px; font-weight: 800;
+          letter-spacing: 0.1em; text-transform: uppercase; color: #fff;
+        }
+
+        /* Headline */
+        .us-headline {
+          font-size: clamp(24px, 5vw, 38px);
+          font-weight: 900;
+          color: #0a0a0a;
+          line-height: 1.08;
+          letter-spacing: -0.02em;
+          margin-bottom: 10px;
+        }
+        .us-sub {
+          font-size: 15px; color: #888;
+          line-height: 1.6; margin-bottom: 28px;
+        }
+
+        /* Steps row */
+        .us-steps {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 20px;
+        }
+        .us-step {
+          flex: 1;
+          background: #f6f6f6;
+          border-radius: 12px;
+          padding: 12px 14px;
+          display: flex; flex-direction: column; gap: 4px;
+          min-width: 0;
+        }
+        .us-step.done { background: #0a0a0a; }
+        .us-step.locked { opacity: 0.5; filter: blur(2px); pointer-events: none; }
+        .us-step-num {
+          font-size: 10px; font-weight: 700;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          color: #bbb;
+        }
+        .us-step.done .us-step-num { color: rgba(255,255,255,0.3); }
+        .us-step-label {
+          font-size: 12px; font-weight: 600; color: #555;
+        }
+        .us-step.done .us-step-label { color: rgba(255,255,255,0.45); }
+        .us-step-val {
+          font-size: 13px; font-weight: 700; color: #0a0a0a;
+        }
+        .us-step.done .us-step-val { color: #D6FD70; }
+
+        /* Assessment banner */
+        .us-banner {
+          background: #f6f6f6;
+          border-radius: 18px;
+          padding: 16px 18px;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+        .us-banner-icon {
+          width: 44px; height: 44px; border-radius: 14px;
+          background: #0a0a0a;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+        }
+        .us-banner-body { flex: 1; min-width: 0; }
+        .us-banner-title {
+          font-size: 14px; font-weight: 700; color: #0a0a0a;
+          display: block; margin-bottom: 2px;
+        }
+        .us-banner-sub {
+          font-size: 12px; color: #999; display: block;
+        }
+        .us-banner-badge {
+          background: #D6FD70; border-radius: 999px;
+          padding: 4px 10px; font-size: 11px; font-weight: 800;
+          color: #0a0a0a; white-space: nowrap; flex-shrink: 0;
+        }
+
+        /* Main card */
+        .us-card {
+          border-radius: 24px;
+          overflow: hidden;
+          border: 2px solid #0a0a0a;
+          margin-bottom: 20px;
+          animation: us-pulse 3s ease-in-out infinite;
+        }
+        @keyframes us-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(214,253,112,0.0); }
+          50%       { box-shadow: 0 0 0 6px rgba(214,253,112,0.22); }
+        }
+
+        /* Blurred preview */
+        .us-preview {
+          background: #0a0a0a;
+          padding: 20px 22px 18px;
+          border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .us-preview-label {
+          font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+          text-transform: uppercase; color: rgba(255,255,255,0.3);
+          margin-bottom: 12px;
+        }
+        .us-preview-row {
+          display: flex; align-items: center;
+          justify-content: space-between; gap: 12px;
+        }
+        .us-preview-lines { display: flex; flex-direction: column; gap: 8px; }
+        .us-blur-line {
+          border-radius: 6px;
+          background: rgba(255,255,255,0.13);
+          filter: blur(4px);
+        }
+        .us-blur-a { width: 180px; height: 18px; }
+        .us-blur-b { width: 120px; height: 13px; background: rgba(255,255,255,0.07); }
+        .us-blur-c { width: 90px;  height: 13px; background: rgba(255,255,255,0.05); }
+
+        /* Spinning lock */
+        .us-lock-wrap {
+          display: flex; flex-direction: column;
+          align-items: center; gap: 4px;
+          flex-shrink: 0;
+        }
+        .us-lock-ring {
+          width: 54px; height: 54px; border-radius: 50%;
+          border: 2px solid rgba(255,255,255,0.12);
+          display: flex; align-items: center; justify-content: center;
+          position: relative;
+        }
+        .us-lock-ring::before {
+          content: '';
+          position: absolute; inset: -4px; border-radius: 50%;
+          border: 2px solid transparent;
+          border-top-color: #D6FD70;
+          animation: us-spin 2s linear infinite;
+        }
+        @keyframes us-spin { to { transform: rotate(360deg); } }
+        .us-lock-txt {
+          font-size: 10px; color: rgba(255,255,255,0.3);
+          font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+        }
+
+        /* CTA button */
+        .us-cta {
+          display: flex; align-items: center;
+          justify-content: space-between; gap: 12px;
+          background: #D6FD70;
+          border: none; cursor: pointer;
+          padding: 20px 22px;
+          width: 100%;
+          position: relative; overflow: hidden;
+          transition: background 0.18s, transform 0.12s;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .us-cta:hover  { background: #c8f55e; }
+        .us-cta:active { transform: scale(0.99); }
+
+        .us-cta-left {
+          display: flex; align-items: center; gap: 14px;
+        }
+        .us-cta-icon {
+          width: 52px; height: 52px; border-radius: 14px;
+          background: #0a0a0a;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+        }
+        .us-cta-title {
+          font-size: 20px; font-weight: 900;
+          color: #0a0a0a; line-height: 1.1;
+          display: block; letter-spacing: -0.01em;
+          text-align: left;
+        }
+        .us-cta-sub {
+          font-size: 12px; color: rgba(10,10,10,0.5);
+          font-weight: 500; display: block; margin-top: 3px;
+          text-align: left;
+        }
+        .us-cta-arrow {
+          width: 48px; height: 48px; border-radius: 50%;
+          background: #0a0a0a;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+          transition: transform 0.2s;
+        }
+        .us-cta:hover .us-cta-arrow { transform: translateX(3px); }
+
+        /* Shimmer */
+        .us-shimmer {
+          position: absolute; inset: 0; pointer-events: none;
+          background: linear-gradient(
+            105deg,
+            transparent 35%,
+            rgba(255,255,255,0.4) 50%,
+            transparent 65%
+          );
+          animation: us-shimmer 2.5s ease-in-out infinite;
+        }
+        @keyframes us-shimmer {
+          0%       { transform: translateX(-100%); }
+          60%, 100%{ transform: translateX(200%);  }
+        }
+
+        /* Trust row */
+        .us-trust {
+          display: flex; flex-wrap: wrap; gap: 12px;
+          margin-bottom: 20px;
+        }
+        .us-trust-item {
+          display: flex; align-items: center; gap: 6px;
+          font-size: 12px; font-weight: 600; color: #999;
+        }
+        .us-trust-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: #D6FD70; flex-shrink: 0;
+        }
+
+        /* Back button */
+        .us-back {
+          display: flex; align-items: center; gap: 6px;
+          background: none; border: none; cursor: pointer;
+          font-size: 13px; font-weight: 500; color: #bbb;
+          font-family: var(--font-plus-jakarta), sans-serif;
+          transition: color 0.15s; padding: 0;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .us-back:hover { color: #0a0a0a; }
+
+        /* ── Responsive tweaks ── */
+
+        /* Mobile: small phones (< 380px) */
+        @media (max-width: 380px) {
+          .us-headline { font-size: 22px; }
+          .us-sub { font-size: 14px; margin-bottom: 22px; }
+          .us-steps { gap: 6px; }
+          .us-step { padding: 10px 10px; }
+          .us-step-label { font-size: 11px; }
+          .us-step-val   { font-size: 11px; }
+          .us-banner { padding: 12px 14px; gap: 10px; }
+          .us-banner-icon { width: 38px; height: 38px; border-radius: 10px; }
+          .us-banner-title { font-size: 13px; }
+          .us-banner-sub   { font-size: 11px; }
+          .us-preview  { padding: 16px 16px 14px; }
+          .us-blur-a { width: 130px; }
+          .us-blur-b { width: 90px; }
+          .us-blur-c { width: 70px; }
+          .us-lock-ring { width: 44px; height: 44px; }
+          .us-cta { padding: 16px 16px; }
+          .us-cta-icon  { width: 44px; height: 44px; border-radius: 12px; }
+          .us-cta-title { font-size: 17px; }
+          .us-cta-sub   { font-size: 11px; }
+          .us-cta-arrow { width: 40px; height: 40px; }
+          .us-card { border-radius: 18px; }
+        }
+
+        /* Mobile: standard phones (380px – 640px) */
+        @media (min-width: 381px) and (max-width: 640px) {
+          .us-headline { font-size: clamp(24px, 6vw, 32px); }
+          .us-cta { padding: 18px 18px; }
+          .us-cta-title { font-size: 18px; }
+        }
+
+        /* Tablet (641px – 1023px) */
+        @media (min-width: 641px) and (max-width: 1023px) {
+          .us-headline { font-size: clamp(28px, 4vw, 36px); }
+          .us-sub { font-size: 15px; }
+          .us-cta-title { font-size: 20px; }
+        }
+
+        /* Desktop (≥ 1024px) */
+        @media (min-width: 1024px) {
+          .us-headline { font-size: 38px; }
+          .us-cta-title { font-size: 22px; }
+          .us-cta { padding: 22px 26px; }
+          .us-cta-icon  { width: 56px; height: 56px; }
+          .us-cta-arrow { width: 52px; height: 52px; }
+          .us-banner { padding: 18px 22px; }
+        }
+      `}</style>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: EASE }}
+        className="us-wrap"
+      >
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05, duration: 0.4, ease: EASE }}
+          className="us-badge"
         >
-          <div
-            className="flex items-center justify-center shrink-0"
-            style={{
-              width: "18px",
-              height: "18px",
-              borderRadius: "50%",
-              background: "#D6FD70",
-            }}
-          >
-            <svg
-              width="9"
-              height="9"
-              viewBox="0 0 12 12"
-              fill="none"
-              stroke="#0a0a0a"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
+          <div className="us-badge-dot">
+            <svg width="9" height="9" viewBox="0 0 12 12" fill="none"
+              stroke="#0a0a0a" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M2 6.2l2 2 4-4" />
             </svg>
           </div>
-          <span className="text-[11px] font-bold uppercase tracking-widest text-white">
-            Almost There
-          </span>
-        </div>
-      </div>
+          <span>Almost there</span>
+        </motion.div>
 
-      {/* Heading */}
-      <motion.h1
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5, ease: EASE }}
-        className="text-[28px] md:text-[36px] font-extrabold text-[#0a0a0a] leading-[1.1] tracking-tight mb-2"
-      >
-        Your result is ready and waiting.
-      </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.18, duration: 0.4, ease: EASE }}
-        className="text-[15px] leading-relaxed mb-8"
-        style={{ color: "#777" }}
-      >
-        We&apos;ve assessed your answers. Unlock your eligibility result below —
-        it takes just 30 seconds and is completely free.
-      </motion.p>
-
-      {/* ── PROMINENT UNLOCK CARD ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 14, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ delay: 0.28, duration: 0.45, ease: EASE }}
-        className="w-full rounded-3xl overflow-hidden mb-6"
-        style={{
-          background: "#0a0a0a",
-          border: "2px solid #0a0a0a",
-          boxShadow:
-            "0 20px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.12)",
-        }}
-      >
-        {/* Blurred teaser row */}
-        <div
-          className="flex items-center justify-between px-6 py-5"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+        {/* Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5, ease: EASE }}
+          className="us-headline"
         >
-          <div className="flex flex-col gap-2">
-            <span
-              className="text-[11px] font-bold uppercase tracking-widest"
-              style={{ color: "rgba(255,255,255,0.35)" }}
+          Your result is<br />ready &amp; waiting.
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.16, duration: 0.4, ease: EASE }}
+          className="us-sub"
+        >
+          You&apos;re one step away from knowing exactly where you stand —
+          thousands of students have used this to unlock their funding.
+        </motion.p>
+
+        {/* Steps progress pills */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.22, duration: 0.4, ease: EASE }}
+          className="us-steps"
+        >
+          {[
+            { num: "Step 1", label: "Nationality", val: "✓ Complete", done: true },
+            { num: "Step 2", label: "Residency",   val: "✓ Complete", done: true },
+            { num: "Result", label: "Eligibility", val: "🔒 Locked",  locked: true },
+          ].map((s) => (
+            <div
+              key={s.num}
+              className={`us-step${s.done ? " done" : ""}${s.locked ? " locked" : ""}`}
             >
-              Your Eligibility Result
-            </span>
-            <div className="flex flex-col gap-2">
-              <div
-                style={{
-                  width: "200px",
-                  height: "16px",
-                  borderRadius: "4px",
-                  background: "rgba(255,255,255,0.12)",
-                  filter: "blur(6px)",
-                }}
-              />
-              <div
-                style={{
-                  width: "140px",
-                  height: "14px",
-                  borderRadius: "4px",
-                  background: "rgba(255,255,255,0.07)",
-                  filter: "blur(6px)",
-                }}
-              />
+              <span className="us-step-num">{s.num}</span>
+              <span className="us-step-label">{s.label}</span>
+              <span className="us-step-val">{s.val}</span>
             </div>
-          </div>
-          <div
-            className="flex items-center justify-center"
-            style={{
-              width: "50px",
-              height: "50px",
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.07)",
-            }}
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="rgba(255,255,255,0.35)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          ))}
+        </motion.div>
+
+        {/* Assessment complete banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.28, duration: 0.4, ease: EASE }}
+          className="us-banner"
+        >
+          <div className="us-banner-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="#D6FD70" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
             </svg>
           </div>
-        </div>
+          <div className="us-banner-body">
+            <strong className="us-banner-title">Assessment complete — 3 of 3 sections done</strong>
+            <span className="us-banner-sub">Your answers have been analysed. Result is ready.</span>
+          </div>
+          <div className="us-banner-badge">Ready</div>
+        </motion.div>
 
-        {/* ── BIG CTA BUTTON ── */}
-        <motion.button
-          onClick={onUnlock}
-          whileHover={{ scale: 1.015 }}
-          whileTap={{ scale: 0.985 }}
-          className="w-full relative overflow-hidden"
-          style={{
-            background: "#D6FD70",
-            border: "none",
-            cursor: "pointer",
-            padding: "22px 24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-          }}
+        {/* Main unlock card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.34, duration: 0.45, ease: EASE }}
+          className="us-card"
         >
-          {/* Shimmer sweep */}
-          <motion.div
-            className="absolute inset-0 z-0"
-            style={{
-              background:
-                "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%)",
-            }}
-            animate={{ x: ["−100%", "200%"] }}
-            transition={{
-              duration: 2.2,
-              repeat: Infinity,
-              ease: "linear",
-              repeatDelay: 1,
-            }}
-          />
+          {/* Blurred preview */}
+          <div className="us-preview">
+            <div className="us-preview-label">Your eligibility result</div>
+            <div className="us-preview-row">
+              <div className="us-preview-lines">
+                <div className="us-blur-line us-blur-a" />
+                <div className="us-blur-line us-blur-b" />
+                <div className="us-blur-line us-blur-c" />
+              </div>
+              <div className="us-lock-wrap">
+                <div className="us-lock-ring">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="rgba(255,255,255,0.5)" strokeWidth="2"
+                    strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </div>
+                <span className="us-lock-txt">Locked</span>
+              </div>
+            </div>
+          </div>
 
-          <div className="relative z-10 flex items-center gap-4">
-            {/* Lock icon circle */}
-            <div
-              className="flex items-center justify-center shrink-0"
-              style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "50%",
-                background: "#0a0a0a",
-              }}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#D6FD70"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+          {/* CTA */}
+          <button className="us-cta" onClick={onUnlock}>
+            <div className="us-shimmer" />
+            <div className="us-cta-left">
+              <div className="us-cta-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="#D6FD70" strokeWidth="2.2"
+                  strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                </svg>
+              </div>
+              <div>
+                <span className="us-cta-title">Unlock my result</span>
+                <span className="us-cta-sub">Free · 30 seconds · No documents needed</span>
+              </div>
+            </div>
+            <div className="us-cta-arrow">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="#D6FD70" strokeWidth="2.5"
+                strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </div>
+          </button>
+        </motion.div>
 
-            <div className="flex flex-col items-start">
-              <span
-                className="text-[20px] font-extrabold leading-tight tracking-tight"
-                style={{ color: "#0a0a0a" }}
-              >
-                Unlock your result
-              </span>
-              <span
-                className="text-[13px] font-medium mt-0.5"
-                style={{ color: "rgba(10,10,10,0.55)" }}
-              >
-                Takes 30 seconds — completely free
-              </span>
-            </div>
-          </div>
+        {/* Trust signals */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.4, ease: EASE }}
+          className="us-trust"
+        >
+          {["Free to use", "No documents needed", "Takes 30 seconds", "No spam, ever"].map((t) => (
+            <span key={t} className="us-trust-item">
+              <span className="us-trust-dot" />
+              {t}
+            </span>
+          ))}
+        </motion.div>
 
-          {/* Arrow circle */}
-          <div
-            className="relative z-10 flex items-center justify-center shrink-0"
-            style={{
-              width: "44px",
-              height: "44px",
-              borderRadius: "50%",
-              background: "#0a0a0a",
-            }}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 14 14"
-              fill="none"
-              stroke="#D6FD70"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M2.5 7h9M8.5 3.5L12 7l-3.5 3.5" />
-            </svg>
-          </div>
+        {/* Back */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.55, duration: 0.35, ease: EASE }}
+          className="us-back"
+          onClick={onBack}
+        >
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"
+            stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11.5 7H2.5M6 3.5L2.5 7l3.5 3.5" />
+          </svg>
+          Review my answers again
         </motion.button>
       </motion.div>
-      {/* ── END PROMINENT UNLOCK CARD ── */}
-
-      {/* Trust signals */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.4, ease: EASE }}
-        className="flex flex-wrap gap-4 mb-6"
-      >
-        {["Free to use", "No documents needed", "Takes 30 seconds"].map((t) => (
-          <span
-            key={t}
-            className="flex items-center gap-1.5 text-[13px] font-medium"
-            style={{ color: "#888" }}
-          >
-            <div
-              className="w-1.5 h-1.5 rounded-full shrink-0"
-              style={{ background: "#D6FD70" }}
-            />
-            {t}
-          </span>
-        ))}
-      </motion.div>
-
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-[13px] transition-colors self-start"
-        style={{ color: "#aaa" }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#0a0a0a")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#aaa")}
-      >
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 14 14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M11.5 7H2.5M6 3.5L2.5 7l3.5 3.5" />
-        </svg>
-        Review my answers again
-      </button>
-    </motion.div>
+    </>
   );
 }
 
