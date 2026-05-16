@@ -859,6 +859,9 @@ function ReviewScreen({
 }
 
 // ── Unlock Screen — standalone dark card ──────────────────────────────────────
+// ── Unlock Screen — more prominent version ────────────────────────────────────
+// REPLACE the existing UnlockScreen function in your EligibilityQuizPage file
+
 function UnlockScreen({
   onUnlock,
   onBack,
@@ -927,17 +930,22 @@ function UnlockScreen({
         it takes just 30 seconds and is completely free.
       </motion.p>
 
-      {/* Dark locked card */}
+      {/* ── PROMINENT UNLOCK CARD ── */}
       <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 14, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: 0.28, duration: 0.45, ease: EASE }}
-        className="w-full rounded-2xl overflow-hidden mb-6"
-        style={{ background: "#0a0a0a", border: "1.5px solid #0a0a0a" }}
+        className="w-full rounded-3xl overflow-hidden mb-6"
+        style={{
+          background: "#0a0a0a",
+          border: "2px solid #0a0a0a",
+          boxShadow:
+            "0 20px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.12)",
+        }}
       >
-        {/* Blurred teaser */}
+        {/* Blurred teaser row */}
         <div
-          className="flex items-center justify-between px-5 py-5"
+          className="flex items-center justify-between px-6 py-5"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
         >
           <div className="flex flex-col gap-2">
@@ -947,23 +955,23 @@ function UnlockScreen({
             >
               Your Eligibility Result
             </span>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <div
                 style={{
-                  width: "180px",
-                  height: "14px",
+                  width: "200px",
+                  height: "16px",
                   borderRadius: "4px",
-                  background: "rgba(255,255,255,0.1)",
-                  filter: "blur(5px)",
+                  background: "rgba(255,255,255,0.12)",
+                  filter: "blur(6px)",
                 }}
               />
               <div
                 style={{
-                  width: "120px",
+                  width: "140px",
                   height: "14px",
                   borderRadius: "4px",
                   background: "rgba(255,255,255,0.07)",
-                  filter: "blur(5px)",
+                  filter: "blur(6px)",
                 }}
               />
             </div>
@@ -971,18 +979,18 @@ function UnlockScreen({
           <div
             className="flex items-center justify-center"
             style={{
-              width: "44px",
-              height: "44px",
+              width: "50px",
+              height: "50px",
               borderRadius: "50%",
               background: "rgba(255,255,255,0.07)",
             }}
           >
             <svg
-              width="18"
-              height="18"
+              width="22"
+              height="22"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="rgba(255,255,255,0.4)"
+              stroke="rgba(255,255,255,0.35)"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -993,41 +1001,56 @@ function UnlockScreen({
           </div>
         </div>
 
-        {/* CTA row */}
-        <button
+        {/* ── BIG CTA BUTTON ── */}
+        <motion.button
           onClick={onUnlock}
-          className="w-full flex items-center justify-between px-5 py-4"
+          whileHover={{ scale: 1.015 }}
+          whileTap={{ scale: 0.985 }}
+          className="w-full relative overflow-hidden"
           style={{
-            background: "transparent",
+            background: "#D6FD70",
             border: "none",
             cursor: "pointer",
-            transition: "background 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.background =
-              "rgba(214,253,112,0.07)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.background =
-              "transparent";
+            padding: "22px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "12px",
           }}
         >
-          <div className="flex items-center gap-3">
+          {/* Shimmer sweep */}
+          <motion.div
+            className="absolute inset-0 z-0"
+            style={{
+              background:
+                "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%)",
+            }}
+            animate={{ x: ["−100%", "200%"] }}
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              ease: "linear",
+              repeatDelay: 1,
+            }}
+          />
+
+          <div className="relative z-10 flex items-center gap-4">
+            {/* Lock icon circle */}
             <div
               className="flex items-center justify-center shrink-0"
               style={{
-                width: "38px",
-                height: "38px",
+                width: "48px",
+                height: "48px",
                 borderRadius: "50%",
-                background: "#D6FD70",
+                background: "#0a0a0a",
               }}
             >
               <svg
-                width="15"
-                height="15"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#0a0a0a"
+                stroke="#D6FD70"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -1036,35 +1059,49 @@ function UnlockScreen({
                 <path d="M7 11V7a5 5 0 0 1 9.9-1" />
               </svg>
             </div>
+
             <div className="flex flex-col items-start">
               <span
-                className="text-[15px] font-bold"
-                style={{ color: "#D6FD70" }}
+                className="text-[20px] font-extrabold leading-tight tracking-tight"
+                style={{ color: "#0a0a0a" }}
               >
                 Unlock your result
               </span>
               <span
-                className="text-[12px]"
-                style={{ color: "rgba(255,255,255,0.4)" }}
+                className="text-[13px] font-medium mt-0.5"
+                style={{ color: "rgba(10,10,10,0.55)" }}
               >
                 Takes 30 seconds — completely free
               </span>
             </div>
           </div>
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            stroke="#D6FD70"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+
+          {/* Arrow circle */}
+          <div
+            className="relative z-10 flex items-center justify-center shrink-0"
+            style={{
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              background: "#0a0a0a",
+            }}
           >
-            <path d="M2.5 7h9M8.5 3.5L12 7l-3.5 3.5" />
-          </svg>
-        </button>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 14 14"
+              fill="none"
+              stroke="#D6FD70"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M2.5 7h9M8.5 3.5L12 7l-3.5 3.5" />
+            </svg>
+          </div>
+        </motion.button>
       </motion.div>
+      {/* ── END PROMINENT UNLOCK CARD ── */}
 
       {/* Trust signals */}
       <motion.div
