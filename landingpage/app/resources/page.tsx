@@ -290,21 +290,22 @@ function NewsletterCard() {
 }
 
 // ─── Hero Section ─────────────────────────────────────────────────
+
 function ResourcesHero() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => setIsMobile(window.innerWidth < 1024);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
 
   const pills = [
-    { label: "Student Finance", style: { left: "15%", top: "22%" } },
-    { label: "Tuition Fees", style: { left: "19%", bottom: "22%" } },
-    { label: "Maintenance Loan", style: { right: "14%", top: "22%" } },
-    { label: "Eligibility", style: { right: "18%", bottom: "22%" } },
+    { label: "Student Finance", style: { left: "8%", top: "18%" } },
+    { label: "Tuition Fees", style: { left: "8%", bottom: "18%" } },
+    { label: "Maintenance Loan", style: { right: "8%", top: "18%" } },
+    { label: "Eligibility", style: { right: "8%", bottom: "18%" } },
   ];
 
   return (
@@ -593,8 +594,9 @@ function ComingSoonSection() {
             margin: "0 auto",
           }}
         >
-          We&apos;re writing detailed, jargon-free articles so you can navigate UK
-          student finance with confidence. Here&apos;s a sneak peek at what&apos;s coming.
+          We&apos;re writing detailed, jargon-free articles so you can navigate
+          UK student finance with confidence. Here&apos;s a sneak peek at
+          what&apos;s coming.
         </p>
       </motion.div>
 
