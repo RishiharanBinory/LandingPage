@@ -19,6 +19,7 @@ import {
   ClipboardList,
   HeartHandshake,
 } from "lucide-react";
+import emailjs from "@emailjs/browser";
 
 const LIME = "#D6FD70";
 const BLACK = "#0a0a0a";
@@ -31,6 +32,8 @@ function NewsletterCard() {
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState(false);
   const [btnHovered, setBtnHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -42,9 +45,31 @@ function NewsletterCard() {
 
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleSubmit = () => {
-    if (!isValid) return;
-    setSubmitted(true);
+  const handleSubmit = async () => {
+    if (!isValid || loading) return;
+    setLoading(true);
+    setError(false);
+
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_ADMIN_TEMPLATE_ID!,
+        {
+          title: "Eligibility checker",
+          subscriber_email: email,
+          email: email,
+          name: "New Subscriber",
+          admin_email: process.env.NEXT_PUBLIC_ADMIN_EMAIL!,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
+      );
+      setSubmitted(true);
+    } catch (err) {
+      console.error("EmailJS error:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -174,11 +199,12 @@ function NewsletterCard() {
                   <style>{`input[type="email"]::placeholder { color: rgba(255,255,255,0.35); }`}</style>
                 </div>
 
+                {/* Replace the Subscribe button with this */}
                 <button
                   onClick={handleSubmit}
                   onMouseEnter={() => setBtnHovered(true)}
                   onMouseLeave={() => setBtnHovered(false)}
-                  disabled={!isValid}
+                  disabled={!isValid || loading}
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -187,29 +213,48 @@ function NewsletterCard() {
                     padding: "13px 22px",
                     borderRadius: "12px",
                     border: "none",
-                    cursor: isValid ? "pointer" : "not-allowed",
+                    cursor: isValid && !loading ? "pointer" : "not-allowed",
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
                     fontSize: "14px",
                     fontWeight: 700,
                     letterSpacing: "0.02em",
-                    background: isValid
-                      ? btnHovered
-                        ? "#c8f040"
-                        : LIME
-                      : "rgba(255,255,255,0.1)",
-                    color: isValid ? BLACK : "rgba(255,255,255,0.3)",
+                    background:
+                      isValid && !loading
+                        ? btnHovered
+                          ? "#c8f040"
+                          : LIME
+                        : "rgba(255,255,255,0.1)",
+                    color:
+                      isValid && !loading ? BLACK : "rgba(255,255,255,0.3)",
                     transition:
                       "background 0.2s ease, color 0.2s ease, transform 0.15s ease",
                     transform:
-                      btnHovered && isValid ? "scale(1.03)" : "scale(1)",
+                      btnHovered && isValid && !loading
+                        ? "scale(1.03)"
+                        : "scale(1)",
                     whiteSpace: "nowrap",
                     flexShrink: 0,
                     width: isMobile ? "100%" : "auto",
                   }}
                 >
-                  Subscribe
-                  <ArrowRight size={15} />
+                  {loading ? "Subscribing..." : "Subscribe"}
+                  {!loading && <ArrowRight size={15} />}
                 </button>
+
+                {/* Add this right after the input row div closes */}
+                {error && (
+                  <p
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      fontSize: "12px",
+                      color: "#ff6b6b",
+                      margin: "10px 0 0",
+                      textAlign: "center",
+                    }}
+                  >
+                    Something went wrong. Please try again.
+                  </p>
+                )}
               </div>
 
               <p
