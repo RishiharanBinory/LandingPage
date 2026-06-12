@@ -20,10 +20,13 @@ const CONFETTI_DATA = Array.from({ length: 24 }, (_, i) => ({
   y: -(((i * 97.312) % 1) * 280 + 80),
   rot: ((i * 53.742) % 1) * 720 - 360,
   color:
-    i % 4 === 0 ? "#D6FD70"
-    : i % 4 === 1 ? "#0a0a0a"
-    : i % 4 === 2 ? "#c8f560"
-    : "#e8ffe0",
+    i % 4 === 0
+      ? "#D6FD70"
+      : i % 4 === 1
+        ? "#0a0a0a"
+        : i % 4 === 2
+          ? "#c8f560"
+          : "#e8ffe0",
   size: ((i * 41.177) % 1) * 10 + 5,
   delay: ((i * 23.918) % 1) * 0.55,
   shape: i % 3,
@@ -73,9 +76,11 @@ export default function EligibilityThankYouPage() {
       style={{ fontFamily: "var(--font-plus-jakarta), sans-serif" }}
     >
       <main className="w-full max-w-xl mx-auto px-5 md:px-8 py-16 flex flex-col items-center text-center">
-
         {/* Confetti origin point */}
-        <div className="relative flex items-center justify-center w-full mb-12" style={{ height: "0px" }}>
+        <div
+          className="relative flex items-center justify-center w-full mb-12"
+          style={{ height: "0px" }}
+        >
           {fired && <Confetti />}
         </div>
 
@@ -99,8 +104,11 @@ export default function EligibilityThankYouPage() {
           >
             <path d="M2 5.2l2 2 4-4" />
           </svg>
-          <span className="text-[12px] font-bold uppercase tracking-widest" style={{ color: "#0a0a0a" }}>
-            Eligibility Confirmed
+          <span
+            className="text-[12px] font-bold uppercase tracking-widest"
+            style={{ color: "#0a0a0a" }}
+          >
+            Result sent
           </span>
         </motion.div>
 
@@ -111,7 +119,7 @@ export default function EligibilityThankYouPage() {
           transition={{ delay: 0.18, duration: 0.55, ease: EASE }}
           className="text-[36px] md:text-[52px] font-extrabold text-[#0a0a0a] leading-[1.06] tracking-tight mb-5"
         >
-          You qualify — congratulations.
+          Now check your inbox.
         </motion.h1>
 
         {/* Sub-copy */}
@@ -122,7 +130,9 @@ export default function EligibilityThankYouPage() {
           className="text-[15px] leading-relaxed mb-12"
           style={{ color: "#666", maxWidth: "420px" }}
         >
-          Thank you for completing the checker. Your result has been sent to your inbox — check your email now.
+          We&apos;ve sent your personalised result to your email, open it to
+          find out where you stand. Don&apos;t forget to check your spam folder
+          too.
         </motion.p>
 
         {/* Divider */}
@@ -135,42 +145,68 @@ export default function EligibilityThankYouPage() {
         />
 
         {/* Single next step — check inbox only */}
+        {/* Next steps card */}
         <motion.div
           initial={{ opacity: 0, x: -14 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.46, duration: 0.4, ease: EASE }}
-          className="w-full flex items-start gap-5 p-6 rounded-2xl text-left"
+          className="w-full flex flex-col gap-4 p-6 rounded-2xl text-left"
           style={{ background: "#0a0a0a" }}
         >
-          {/* Step bubble */}
-          <div
-            className="flex items-center justify-center shrink-0"
-            style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#D6FD70" }}
+          <span
+            className="text-[11px] font-bold uppercase tracking-widest"
+            style={{ color: "rgba(255,255,255,0.3)" }}
           >
-            {/* Inbox icon */}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#0a0a0a"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            While you wait
+          </span>
+
+          {/* Step 1 */}
+          <div className="flex items-start gap-4">
+            <div
+              className="flex items-center justify-center shrink-0"
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                background: "#D6FD70",
+              }}
             >
-              <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
-              <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z" />
-            </svg>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#0a0a0a"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
+                <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z" />
+              </svg>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-[14px] font-bold" style={{ color: "#fff" }}>
+                Open your email
+              </span>
+              <span
+                className="text-[13px] leading-snug"
+                style={{ color: "rgba(255,255,255,0.45)" }}
+              >
+                Your result is waiting, check your inbox and spam folder. It
+                arrives within a few minutes.
+              </span>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <span className="text-[15px] font-bold" style={{ color: "#fff" }}>
-              Check your inbox
-            </span>
-            <span className="text-[13px] leading-snug" style={{ color: "rgba(255,255,255,0.5)" }}>
-              We&apos;ve sent your eligibility result to the email address you provided. It should arrive within a few minutes — check your spam folder if you don&apos;t see it.
-            </span>
-          </div>
+          {/* Divider */}
+          <div
+            className="w-full h-px"
+            style={{ background: "rgba(255,255,255,0.07)" }}
+          />
+
+
+   
         </motion.div>
 
         {/* Subtle closing note */}
@@ -181,9 +217,9 @@ export default function EligibilityThankYouPage() {
           className="text-[12px] mt-8"
           style={{ color: "#ccc" }}
         >
-          This checker is free to use. No account was created and your data is used only to deliver your result.
+          This checker is free to use. No account was created and your data is
+          used only to deliver your result.
         </motion.p>
-
       </main>
     </div>
   );

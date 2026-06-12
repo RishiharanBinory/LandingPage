@@ -193,7 +193,7 @@ export default function TrustedProviders() {
                     >
                       {point.icon}
                     </div>
-                    <p style={{ fontSize: "15px", fontWeight: 500, color: "#0a0a0a", margin: 0 }}>
+                    <p style={{ fontSize: "16px", fontWeight: 500, color: "#0a0a0a", margin: 0 }}>
                       {point.text}
                     </p>
                   </motion.div>
@@ -206,7 +206,7 @@ export default function TrustedProviders() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.55, duration: 0.5 }}
-                style={{ fontSize: "15px", color: "#555", lineHeight: 1.6, margin: 0 }}
+                style={{ fontSize: "16px", color: "#555", lineHeight: 1.6, margin: 0 }}
               >
                 You&apos;re guided from eligibility to application —{" "}
                 <span style={{ fontWeight: 700, color: "#0a0a0a" }}>

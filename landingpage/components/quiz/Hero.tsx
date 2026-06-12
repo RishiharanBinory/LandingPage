@@ -35,41 +35,29 @@ type Question = {
   options: Option[];
   layout?: "grid" | "list";
 };
-type ScreenState = "quiz" | "not_eligible" | "review" | "unlock" | "form";
+type ScreenState = "quiz" | "review" | "unlock" | "form";
 
 // ── Questions ─────────────────────────────────────────────────────────────────
-// CHANGE LOG (from PDF):
-// Page 1: ILR moved to standalone option; "Other Visa" type for remaining; capitalise UK National / Irish National
-// Page 2: Rephrase yes/no; "No" → ask reason (work/study → NOT_ELIGIBLE, vacation → continue); remove sub from residency q; add bachelor's/master's loan question after residency
-// Page 3: Split loan question by degree type; master's 1yr/2yr → NOT_ELIGIBLE; bachelor's 4yr+ → NOT_ELIGIBLE
-// Page 4: Long-residence option 2 wording fix; add 3rd option → NOT_ELIGIBLE; 3-year residency before long-residence; capitalisation fixes
-
 const QUESTIONS: Question[] = [
-  // ── Q1: Nationality ──────────────────────────────────────────────────────
   {
     id: "q1",
     section: "01",
     sectionNum: 1,
     sectionLabel: "Nationality",
     question: "What is your nationality or current immigration status?",
-    // sub removed — PDF page 1 shows no sub text requested; keeping original as it's not flagged
     sub: "Your nationality is the first thing we check to assess your eligibility.",
     options: [
-      // Page 1: capitalise properly
       { label: "UK National", next: "q2" },
       {
         label: "EU / Swiss / Norwegian / Icelandic / Liechtenstein National",
         next: "q2_eu",
       },
-      // Page 1: capitalise properly
       { label: "Irish National", next: "q2" },
-      // Page 1: ILR moved to separate standalone option
       {
         label: "Indefinite Leave to Remain / Enter (ILR / ILE)",
         sub: "Settled status outside the EU Settlement Scheme",
         next: "q1_ilr_residency",
       },
-      // Page 1: remaining "Other" is now specifically "Other Visa" type
       {
         label: "Other Visa",
         sub: "Non-EU visa, refugee status, or another immigration status",
@@ -77,17 +65,13 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q2 (UK / Irish nationals): UK Residency ──────────────────────────────
   {
     id: "q2",
     section: "02",
     sectionNum: 2,
     sectionLabel: "UK Residency",
     question: "Have you been living in the UK for the past 3 years?",
-    // Page 2: remove the sub description below the question
     options: [
-      // Page 2: rephrase options
       {
         label: "Yes — I have lived in the UK for the last three years",
         next: "q_degree_type",
@@ -98,8 +82,6 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q2_NO_REASON: Why haven't you been in the UK? (Page 2 new branch) ────
   {
     id: "q2_no_reason",
     section: "02",
@@ -120,15 +102,12 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q2_EU: EU nationals — residency ──────────────────────────────────────
   {
     id: "q2_eu",
     section: "02",
     sectionNum: 2,
     sectionLabel: "UK Residency",
     question: "Have you been living in the UK for the past 3 years?",
-    // Page 2: remove sub
     options: [
       {
         label: "Yes — I have lived in the UK for the last three years",
@@ -140,8 +119,6 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q2_EU_NO_REASON: Why not in UK? (EU path) ────────────────────────────
   {
     id: "q2_eu_no_reason",
     section: "02",
@@ -162,8 +139,6 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q2_SETTLED: EU Settlement Status ─────────────────────────────────────
   {
     id: "q2_settled",
     section: "02",
@@ -184,10 +159,6 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q1_OTHER: Other immigration status (non-ILR) ─────────────────────────
-  // Page 1: ILR removed from here (now its own top-level option)
-  // Page 4: capitalise "Irish National"; change "Irish citizen" → "Irish National"
   {
     id: "q1_other",
     section: "01",
@@ -203,7 +174,6 @@ const QUESTIONS: Question[] = [
       },
       { label: "Refugee or family member of a refugee", next: "q_degree_type" },
       {
-        // Page 4: "Irish citizen" → "Irish National"; capitalise
         label:
           "Family member of a UK National, Irish National, or settled-status holder",
         next: "q_degree_type",
@@ -227,9 +197,6 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q1_LONG_RESIDENCE: Long Residence conditions ──────────────────────────
-  // Page 4: option 2 → "half of my age"; add 3rd option → NOT_ELIGIBLE; 3-year question first
   {
     id: "q1_long_residence",
     section: "01",
@@ -239,26 +206,20 @@ const QUESTIONS: Question[] = [
     sub: "You only need to meet one of these three conditions.",
     options: [
       {
-        // Page 4: leads to 3-year residency check first
         label: "I have lived in the UK for 20 years or more",
         next: "q1_long_res_3yr",
       },
       {
-        // Page 4: "half of my life" → "half of my age in the UK"
         label: "I have spent more than half of my age in the UK",
         next: "q1_long_res_3yr",
       },
       {
-        // Page 4: new third option → NOT_ELIGIBLE
         label:
           "I have not lived in the UK for 20 years or half of my age in the UK",
         next: "NOT_ELIGIBLE",
       },
     ],
   },
-
-  // ── Q1_LONG_RES_3YR: 3-year residency check for long-residence path ───────
-  // Page 4: include the 3-year question for the first two long-residence options
   {
     id: "q1_long_res_3yr",
     section: "02",
@@ -276,8 +237,6 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q1_ILR_RESIDENCY: 3-year check for ILR holders ──────────────────────
   {
     id: "q1_ilr_residency",
     section: "02",
@@ -295,15 +254,12 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q_DEGREE_TYPE: Was/is the student loan for bachelor's or master's? ────
-  // Page 2 & 3: new question added after residency confirmation
   {
     id: "q_degree_type",
     section: "03",
     sectionNum: 3,
     sectionLabel: "Prior Funding",
-    question: "Have you previously received a student loan’?",
+    question: "Have you previously received a student loan?",
     sub: "",
     options: [
       {
@@ -320,9 +276,6 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q_FUNDING_BACHELOR: Prior funding years for bachelor's ───────────────
-  // Page 3: bachelor's → 1yr/2yr/3yr Eligible; 4yr+ Not Eligible
   {
     id: "q_funding_bachelor",
     section: "03",
@@ -341,9 +294,6 @@ const QUESTIONS: Question[] = [
       },
     ],
   },
-
-  // ── Q_FUNDING_MASTER: Prior funding years for master's ───────────────────
-  // Page 3: master's → 1yr → Not Eligible; 2yr → Not Eligible
   {
     id: "q_funding_master",
     section: "03",
@@ -388,7 +338,6 @@ const SECTIONS = [
   { num: 3, label: "Prior Funding" },
 ];
 
-// Short readable labels for each question
 const SHORT_LABELS: Record<string, string> = {
   "What is your nationality or current immigration status?":
     "Nationality / Status",
@@ -399,7 +348,7 @@ const SHORT_LABELS: Record<string, string> = {
   "What is your EU Settlement Scheme status?": "EU Settlement Status",
   "Which of these best describes your current status?": "Immigration Status",
   "Which long residence condition applies to you?": "Long Residence Condition",
-  "Have you previously received a student loan’?": "Prior Student Loan",
+  "Have you previously received a student loan?": "Prior Student Loan",
   "Have you received a student loan for a Bachelor's or Master's degree?":
     "Degree Type",
   "How many years of student funding have you received for your Bachelor's degree?":
@@ -571,108 +520,7 @@ function OptionCard({
   );
 }
 
-// ── Not Eligible Screen ───────────────────────────────────────────────────────
-function NotEligibleScreen({ onBack }: { onBack: () => void }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: EASE }}
-      className="flex flex-col items-center text-center gap-8 py-4 max-w-xl mx-auto"
-    >
-      <motion.div
-        initial={{ scale: 0.7, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ ...SPRING, delay: 0.1 } as Transition}
-        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full"
-        style={{ background: "#f0f0f0" }}
-      >
-        <span
-          className="text-[12px] font-bold uppercase tracking-widest"
-          style={{ color: "#555" }}
-        >
-          Not eligible right now
-        </span>
-      </motion.div>
-      <motion.h1
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.55, ease: EASE }}
-        className="text-[32px] md:text-[44px] font-extrabold text-[#0a0a0a] leading-[1.08] tracking-tight"
-      >
-        It looks like standard funding may not apply right now.
-      </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.45, ease: EASE }}
-        className="text-[15px] leading-relaxed"
-        style={{ color: "#555" }}
-      >
-        Based on your answers, you may not meet the standard criteria at this
-        time. This doesn&apos;t mean your options are closed — circumstances
-        change, and alternative pathways do exist. We&apos;d encourage you to
-        speak with an advisor before making any final decisions.
-      </motion.p>
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.45, ease: EASE }}
-        className="w-full rounded-2xl p-6 text-left"
-        style={{ background: "#fafafa", border: "1.5px solid #ebebeb" }}
-      >
-        <p
-          className="text-[12px] font-bold uppercase tracking-widest mb-4"
-          style={{ color: "#bbb" }}
-        >
-          What you can do next
-        </p>
-        <ul className="flex flex-col gap-3">
-          {[
-            "Speak to a funding advisor at your chosen institution",
-            "Check whether your circumstances have recently changed",
-            "Explore bursaries, scholarships, or alternative funding routes",
-          ].map((item) => (
-            <li
-              key={item}
-              className="flex items-start gap-3 text-[14px] leading-snug"
-              style={{ color: "#444" }}
-            >
-              <div
-                className="mt-1 w-2 h-2 rounded-full shrink-0"
-                style={{ background: "#D6FD70" }}
-              />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </motion.div>
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-[13px] transition-colors"
-        style={{ color: "#aaa" }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#0a0a0a")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#aaa")}
-      >
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 14 14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M11.5 7H2.5M6 3.5L2.5 7l3.5 3.5" />
-        </svg>
-        Review my answers
-      </button>
-    </motion.div>
-  );
-}
-
-// ── Review Screen — shows Q&A with edit buttons ───────────────────────────────
+// ── Review Screen ─────────────────────────────────────────────────────────────
 function ReviewScreen({
   answers,
   onEdit,
@@ -728,7 +576,6 @@ function ReviewScreen({
         </div>
       </div>
 
-      {/* Heading */}
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -766,7 +613,6 @@ function ReviewScreen({
             }}
           >
             <div className="flex items-start gap-3 flex-1 min-w-0">
-              {/* Number dot */}
               <div
                 className="flex items-center justify-center shrink-0 mt-0.5"
                 style={{
@@ -857,14 +703,7 @@ function ReviewScreen({
   );
 }
 
-// ── Unlock Screen — standalone dark card ──────────────────────────────────────
-// ── Unlock Screen — more prominent version ────────────────────────────────────
-// REPLACE the existing UnlockScreen function in your EligibilityQuizPage file
-
-// ── Unlock Screen — Final Production Version ─────────────────────────────────
-// Drop-in replacement for the existing UnlockScreen function.
-// All dependencies (motion, EASE, SPRING) are already present in your file.
-
+// ── Unlock Screen ─────────────────────────────────────────────────────────────
 function UnlockScreen({
   onUnlock,
   onBack,
@@ -874,7 +713,6 @@ function UnlockScreen({
 }) {
   return (
     <>
-      {/* ── Scoped styles ── */}
       <style>{`
         .us-wrap {
           font-family: var(--font-plus-jakarta), sans-serif;
@@ -882,8 +720,6 @@ function UnlockScreen({
           margin: 0 auto;
           width: 100%;
         }
-
-        /* Badge */
         .us-badge {
           display: inline-flex;
           align-items: center;
@@ -904,8 +740,6 @@ function UnlockScreen({
           font-size: 11px; font-weight: 800;
           letter-spacing: 0.1em; text-transform: uppercase; color: #fff;
         }
-
-        /* Headline */
         .us-headline {
           font-size: clamp(24px, 5vw, 38px);
           font-weight: 900;
@@ -918,8 +752,6 @@ function UnlockScreen({
           font-size: 15px; color: #888;
           line-height: 1.6; margin-bottom: 28px;
         }
-
-        /* Steps row */
         .us-steps {
           display: flex;
           gap: 8px;
@@ -937,28 +769,19 @@ function UnlockScreen({
         .us-step.locked { opacity: 0.5; filter: blur(2px); pointer-events: none; }
         .us-step-num {
           font-size: 10px; font-weight: 700;
-          letter-spacing: 0.08em; text-transform: uppercase;
-          color: #bbb;
+          letter-spacing: 0.08em; text-transform: uppercase; color: #bbb;
         }
         .us-step.done .us-step-num { color: rgba(255,255,255,0.3); }
-        .us-step-label {
-          font-size: 12px; font-weight: 600; color: #555;
-        }
+        .us-step-label { font-size: 12px; font-weight: 600; color: #555; }
         .us-step.done .us-step-label { color: rgba(255,255,255,0.45); }
-        .us-step-val {
-          font-size: 13px; font-weight: 700; color: #0a0a0a;
-        }
+        .us-step-val { font-size: 13px; font-weight: 700; color: #0a0a0a; }
         .us-step.done .us-step-val { color: #D6FD70; }
-
-        /* Assessment banner */
         .us-banner {
           background: #f6f6f6;
           border-radius: 18px;
           padding: 16px 18px;
           margin-bottom: 20px;
-          display: flex;
-          align-items: center;
-          gap: 14px;
+          display: flex; align-items: center; gap: 14px;
         }
         .us-banner-icon {
           width: 44px; height: 44px; border-radius: 14px;
@@ -971,33 +794,26 @@ function UnlockScreen({
           font-size: 14px; font-weight: 700; color: #0a0a0a;
           display: block; margin-bottom: 2px;
         }
-        .us-banner-sub {
-          font-size: 12px; color: #999; display: block;
-        }
+        .us-banner-sub { font-size: 12px; color: #999; display: block; }
         .us-banner-badge {
           background: #D6FD70; border-radius: 999px;
           padding: 4px 10px; font-size: 11px; font-weight: 800;
           color: #0a0a0a; white-space: nowrap; flex-shrink: 0;
         }
-
-        /* Main card */
         .us-card {
           border-radius: 24px;
           overflow: hidden;
           border: 2px solid #0a0a0a;
-          margin-bottom: 20px;
+          margin-bottom: 12px;
           animation: us-pulse 3s ease-in-out infinite;
         }
         @keyframes us-pulse {
           0%, 100% { box-shadow: 0 0 0 0 rgba(214,253,112,0.0); }
           50%       { box-shadow: 0 0 0 6px rgba(214,253,112,0.22); }
         }
-
-        /* Blurred preview */
         .us-preview {
           background: #0a0a0a;
           padding: 20px 22px 18px;
-          border-bottom: 1px solid rgba(255,255,255,0.07);
         }
         .us-preview-label {
           font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
@@ -1017,12 +833,9 @@ function UnlockScreen({
         .us-blur-a { width: 180px; height: 18px; }
         .us-blur-b { width: 120px; height: 13px; background: rgba(255,255,255,0.07); }
         .us-blur-c { width: 90px;  height: 13px; background: rgba(255,255,255,0.05); }
-
-        /* Spinning lock */
         .us-lock-wrap {
           display: flex; flex-direction: column;
-          align-items: center; gap: 4px;
-          flex-shrink: 0;
+          align-items: center; gap: 4px; flex-shrink: 0;
         }
         .us-lock-ring {
           width: 54px; height: 54px; border-radius: 50%;
@@ -1042,71 +855,8 @@ function UnlockScreen({
           font-size: 10px; color: rgba(255,255,255,0.3);
           font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
         }
-
-        /* CTA button */
-        .us-cta {
-          display: flex; align-items: center;
-          justify-content: space-between; gap: 12px;
-          background: #D6FD70;
-          border: none; cursor: pointer;
-          padding: 20px 22px;
-          width: 100%;
-          position: relative; overflow: hidden;
-          transition: background 0.18s, transform 0.12s;
-          -webkit-tap-highlight-color: transparent;
-        }
-        .us-cta:hover  { background: #c8f55e; }
-        .us-cta:active { transform: scale(0.99); }
-
-        .us-cta-left {
-          display: flex; align-items: center; gap: 14px;
-        }
-        .us-cta-icon {
-          width: 52px; height: 52px; border-radius: 14px;
-          background: #0a0a0a;
-          display: flex; align-items: center; justify-content: center;
-          flex-shrink: 0;
-        }
-        .us-cta-title {
-          font-size: 20px; font-weight: 900;
-          color: #0a0a0a; line-height: 1.1;
-          display: block; letter-spacing: -0.01em;
-          text-align: left;
-        }
-        .us-cta-sub {
-          font-size: 12px; color: rgba(10,10,10,0.5);
-          font-weight: 500; display: block; margin-top: 3px;
-          text-align: left;
-        }
-        .us-cta-arrow {
-          width: 48px; height: 48px; border-radius: 50%;
-          background: #0a0a0a;
-          display: flex; align-items: center; justify-content: center;
-          flex-shrink: 0;
-          transition: transform 0.2s;
-        }
-        .us-cta:hover .us-cta-arrow { transform: translateX(3px); }
-
-        /* Shimmer */
-        .us-shimmer {
-          position: absolute; inset: 0; pointer-events: none;
-          background: linear-gradient(
-            105deg,
-            transparent 35%,
-            rgba(255,255,255,0.4) 50%,
-            transparent 65%
-          );
-          animation: us-shimmer 2.5s ease-in-out infinite;
-        }
-        @keyframes us-shimmer {
-          0%       { transform: translateX(-100%); }
-          60%, 100%{ transform: translateX(200%);  }
-        }
-
-        /* Trust row */
         .us-trust {
-          display: flex; flex-wrap: wrap; gap: 12px;
-          margin-bottom: 20px;
+          display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;
         }
         .us-trust-item {
           display: flex; align-items: center; gap: 6px;
@@ -1116,8 +866,6 @@ function UnlockScreen({
           width: 6px; height: 6px; border-radius: 50%;
           background: #D6FD70; flex-shrink: 0;
         }
-
-        /* Back button */
         .us-back {
           display: flex; align-items: center; gap: 6px;
           background: none; border: none; cursor: pointer;
@@ -1127,10 +875,6 @@ function UnlockScreen({
           -webkit-tap-highlight-color: transparent;
         }
         .us-back:hover { color: #0a0a0a; }
-
-        /* ── Responsive tweaks ── */
-
-        /* Mobile: small phones (< 380px) */
         @media (max-width: 380px) {
           .us-headline { font-size: 22px; }
           .us-sub { font-size: 14px; margin-bottom: 22px; }
@@ -1147,35 +891,17 @@ function UnlockScreen({
           .us-blur-b { width: 90px; }
           .us-blur-c { width: 70px; }
           .us-lock-ring { width: 44px; height: 44px; }
-          .us-cta { padding: 16px 16px; }
-          .us-cta-icon  { width: 44px; height: 44px; border-radius: 12px; }
-          .us-cta-title { font-size: 17px; }
-          .us-cta-sub   { font-size: 11px; }
-          .us-cta-arrow { width: 40px; height: 40px; }
           .us-card { border-radius: 18px; }
         }
-
-        /* Mobile: standard phones (380px – 640px) */
         @media (min-width: 381px) and (max-width: 640px) {
           .us-headline { font-size: clamp(24px, 6vw, 32px); }
-          .us-cta { padding: 18px 18px; }
-          .us-cta-title { font-size: 18px; }
         }
-
-        /* Tablet (641px – 1023px) */
         @media (min-width: 641px) and (max-width: 1023px) {
           .us-headline { font-size: clamp(28px, 4vw, 36px); }
           .us-sub { font-size: 15px; }
-          .us-cta-title { font-size: 20px; }
         }
-
-        /* Desktop (≥ 1024px) */
         @media (min-width: 1024px) {
           .us-headline { font-size: 38px; }
-          .us-cta-title { font-size: 22px; }
-          .us-cta { padding: 22px 26px; }
-          .us-cta-icon  { width: 56px; height: 56px; }
-          .us-cta-arrow { width: 52px; height: 52px; }
           .us-banner { padding: 18px 22px; }
         }
       `}</style>
@@ -1232,7 +958,7 @@ function UnlockScreen({
           thousands of students have used this to unlock their funding.
         </motion.p>
 
-        {/* Steps progress pills */}
+        {/* Steps */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1240,24 +966,9 @@ function UnlockScreen({
           className="us-steps"
         >
           {[
-            {
-              num: "Step 1",
-              label: "Nationality",
-              val: "✓ Complete",
-              done: true,
-            },
-            {
-              num: "Step 2",
-              label: "Residency",
-              val: "✓ Complete",
-              done: true,
-            },
-            {
-              num: "Result",
-              label: "Eligibility",
-              val: "🔒 Locked",
-              locked: true,
-            },
+            { num: "Step 1", label: "Nationality", val: "✓ Complete", done: true },
+            { num: "Step 2", label: "Residency",   val: "✓ Complete", done: true },
+            { num: "Result", label: "Eligibility", val: "🔒 Locked",  locked: true },
           ].map((s) => (
             <div
               key={s.num}
@@ -1270,7 +981,7 @@ function UnlockScreen({
           ))}
         </motion.div>
 
-        {/* Assessment complete banner */}
+        {/* Assessment banner */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1279,14 +990,9 @@ function UnlockScreen({
         >
           <div className="us-banner-icon">
             <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#D6FD70"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              width="22" height="22" viewBox="0 0 24 24"
+              fill="none" stroke="#D6FD70" strokeWidth="2"
+              strokeLinecap="round" strokeLinejoin="round"
             >
               <path d="M9 11l3 3L22 4" />
               <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
@@ -1303,14 +1009,13 @@ function UnlockScreen({
           <div className="us-banner-badge">Ready</div>
         </motion.div>
 
-        {/* Main unlock card */}
+        {/* Main unlock card — preview only, no CTA inside */}
         <motion.div
           initial={{ opacity: 0, y: 16, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.34, duration: 0.45, ease: EASE }}
           className="us-card"
         >
-          {/* Blurred preview */}
           <div className="us-preview">
             <div className="us-preview-label">Your eligibility result</div>
             <div className="us-preview-row">
@@ -1322,14 +1027,9 @@ function UnlockScreen({
               <div className="us-lock-wrap">
                 <div className="us-lock-ring">
                   <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.5)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    width="22" height="22" viewBox="0 0 24 24"
+                    fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2"
+                    strokeLinecap="round" strokeLinejoin="round"
                   >
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -1339,48 +1039,19 @@ function UnlockScreen({
               </div>
             </div>
           </div>
+        </motion.div>
 
-          {/* CTA */}
-          <button className="us-cta" onClick={onUnlock}>
-            <div className="us-shimmer" />
-            <div className="us-cta-left">
-              <div className="us-cta-icon">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#D6FD70"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" />
-                  <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-                </svg>
-              </div>
-              <div>
-                <span className="us-cta-title">Unlock my result</span>
-                <span className="us-cta-sub">
-                  Free · 30 seconds · No documents needed
-                </span>
-              </div>
-            </div>
-            <div className="us-cta-arrow">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#D6FD70"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </div>
-          </button>
+        {/* CTA — standalone EligibilityButton, same as "Confirm & Continue" */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.38, duration: 0.4, ease: EASE }}
+          className="flex flex-col items-start gap-3 mb-5"
+        >
+          <EligibilityButton label="Unlock my result" onClick={onUnlock} />
+          <p className="text-[14px]" style={{ color: "#bbb" }}>
+            Free · 30 seconds · No documents needed
+          </p>
         </motion.div>
 
         {/* Trust signals */}
@@ -1412,14 +1083,9 @@ function UnlockScreen({
           onClick={onBack}
         >
           <svg
-            width="13"
-            height="13"
-            viewBox="0 0 14 14"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            width="13" height="13" viewBox="0 0 14 14"
+            fill="none" stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round"
           >
             <path d="M11.5 7H2.5M6 3.5L2.5 7l3.5 3.5" />
           </svg>
@@ -1440,16 +1106,14 @@ interface FormData {
 function LeadCaptureScreen({
   onBack,
   answers,
+  eligible,
 }: {
   onBack: () => void;
   answers: Record<string, string>;
+  eligible: boolean;
 }) {
   const router = useRouter();
-  const [form, setForm] = useState<FormData>({
-    name: "",
-    email: "",
-    mobile: "",
-  });
+  const [form, setForm] = useState<FormData>({ name: "", email: "", mobile: "" });
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -1471,15 +1135,6 @@ function LeadCaptureScreen({
     setServerError(null);
 
     try {
-      const answersText = Object.entries(answers)
-        .map(([q, a]) => `Q: ${q}\nA: ${a}`)
-        .join("\n\n");
-      const submittedAt = new Date().toLocaleString("en-GB", {
-        dateStyle: "full",
-        timeStyle: "short",
-        timeZone: "Europe/London",
-      });
-
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_USER_TEMPLATE_ID,
@@ -1495,6 +1150,7 @@ function LeadCaptureScreen({
           email: form.email.trim(),
           mobile: form.mobile.trim(),
           answers,
+          eligible,
         }),
       });
       if (!zohoRes.ok)
@@ -1514,24 +1170,9 @@ function LeadCaptureScreen({
     placeholder: string;
     type: string;
   }[] = [
-    {
-      key: "name",
-      label: "Full Name",
-      placeholder: "Jane Smith",
-      type: "text",
-    },
-    {
-      key: "email",
-      label: "Email Address",
-      placeholder: "jane@example.com",
-      type: "email",
-    },
-    {
-      key: "mobile",
-      label: "Mobile Number",
-      placeholder: "+44 7700 900000",
-      type: "tel",
-    },
+    { key: "name",   label: "Full Name",    placeholder: "Jane Smith",       type: "text"  },
+    { key: "email",  label: "Email Address", placeholder: "jane@example.com", type: "email" },
+    { key: "mobile", label: "Mobile Number", placeholder: "+44 7700 900000",  type: "tel"   },
   ];
 
   return (
@@ -1541,6 +1182,7 @@ function LeadCaptureScreen({
       transition={{ duration: 0.5, ease: EASE }}
       className="flex flex-col gap-0 max-w-xl mx-auto w-full"
     >
+      {/* Badge */}
       <div className="flex items-center gap-2 mb-5">
         <div
           className="flex items-center gap-2 px-3 py-1.5 rounded-full"
@@ -1548,22 +1190,12 @@ function LeadCaptureScreen({
         >
           <div
             className="flex items-center justify-center shrink-0"
-            style={{
-              width: "18px",
-              height: "18px",
-              borderRadius: "50%",
-              background: "#D6FD70",
-            }}
+            style={{ width: "18px", height: "18px", borderRadius: "50%", background: "#D6FD70" }}
           >
             <svg
-              width="8"
-              height="8"
-              viewBox="0 0 12 12"
-              fill="none"
-              stroke="#0a0a0a"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              width="8" height="8" viewBox="0 0 12 12"
+              fill="none" stroke="#0a0a0a" strokeWidth="2.5"
+              strokeLinecap="round" strokeLinejoin="round"
             >
               <rect x="2" y="5.5" width="8" height="5" rx="1" />
               <path d="M4 5.5V4a2 2 0 0 1 3.9-.5" />
@@ -1574,6 +1206,7 @@ function LeadCaptureScreen({
           </span>
         </div>
       </div>
+
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -1615,11 +1248,7 @@ function LeadCaptureScreen({
               placeholder={field.placeholder}
               value={form[field.key]}
               autoComplete={
-                field.key === "name"
-                  ? "name"
-                  : field.key === "email"
-                    ? "email"
-                    : "tel"
+                field.key === "name" ? "name" : field.key === "email" ? "email" : "tel"
               }
               onChange={(e) => {
                 setForm((prev) => ({ ...prev, [field.key]: e.target.value }));
@@ -1638,13 +1267,9 @@ function LeadCaptureScreen({
                 transition: "border-color 0.18s",
                 width: "100%",
               }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "#0a0a0a";
-              }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "#0a0a0a"; }}
               onBlur={(e) => {
-                e.currentTarget.style.borderColor = errors[field.key]
-                  ? "#ff4d4f"
-                  : "#e8e8e8";
+                e.currentTarget.style.borderColor = errors[field.key] ? "#ff4d4f" : "#e8e8e8";
               }}
             />
             {errors[field.key] && (
@@ -1685,14 +1310,9 @@ function LeadCaptureScreen({
         onMouseLeave={(e) => (e.currentTarget.style.color = "#aaa")}
       >
         <svg
-          width="13"
-          height="13"
-          viewBox="0 0 14 14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          width="13" height="13" viewBox="0 0 14 14"
+          fill="none" stroke="currentColor" strokeWidth="2"
+          strokeLinecap="round" strokeLinejoin="round"
         >
           <path d="M11.5 7H2.5M6 3.5L2.5 7l3.5 3.5" />
         </svg>
@@ -1704,20 +1324,20 @@ function LeadCaptureScreen({
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function EligibilityQuizPage() {
-  const [history, setHistory] = useState<string[]>(["q1"]);
-  const [pointer, setPointer] = useState(0);
-  const [screen, setScreen] = useState<ScreenState>("quiz");
+  const [history, setHistory]   = useState<string[]>(["q1"]);
+  const [pointer, setPointer]   = useState(0);
+  const [screen, setScreen]     = useState<ScreenState>("quiz");
   const [direction, setDirection] = useState(1);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers]   = useState<Record<string, string>>({});
+  const [eligible, setEligible] = useState(false);
 
-  const activeId = history[pointer];
+  const activeId      = history[pointer];
   const activeCurrent = QUESTIONS.find((q) => q.id === activeId)!;
-  const currentStep = STEP_MAP[activeId] ?? 1;
+  const currentStep   = STEP_MAP[activeId] ?? 1;
   const activeSection = activeCurrent?.sectionNum ?? 1;
 
   const canGoBack =
     (screen === "quiz" && pointer > 0) ||
-    screen === "not_eligible" ||
     screen === "review" ||
     screen === "unlock" ||
     screen === "form";
@@ -1727,20 +1347,23 @@ export default function EligibilityQuizPage() {
   function handleChoose(option: Option) {
     setDirection(1);
     setAnswers((prev) => ({ ...prev, [activeCurrent.question]: option.label }));
+
     if (option.next === "NOT_ELIGIBLE") {
-      setScreen("not_eligible");
-      return;
-    }
-    if (option.next === "ELIGIBLE") {
+      setEligible(false);
       setScreen("review");
       return;
     }
+    if (option.next === "ELIGIBLE") {
+      setEligible(true);
+      setScreen("review");
+      return;
+    }
+
     const newHistory = [...history.slice(0, pointer + 1), option.next];
     setHistory(newHistory);
     setPointer(newHistory.length - 1);
   }
 
-  // Edit a specific answer — find which question it was and go back to it
   function handleEdit(question: string) {
     const questionObj = QUESTIONS.find((q) => q.question === question);
     if (!questionObj) return;
@@ -1748,7 +1371,6 @@ export default function EligibilityQuizPage() {
     if (idx !== -1) {
       setPointer(idx);
     } else {
-      // Question not in forward history — restart from q1
       setPointer(0);
     }
     setScreen("quiz");
@@ -1757,27 +1379,15 @@ export default function EligibilityQuizPage() {
 
   function handleBack() {
     setDirection(-1);
-    if (screen === "form") {
-      setScreen("unlock");
-      return;
-    }
-    if (screen === "unlock") {
-      setScreen("review");
-      return;
-    }
-    if (screen === "review" || screen === "not_eligible") {
-      setScreen("quiz");
-      return;
-    }
+    if (screen === "form")   { setScreen("unlock"); return; }
+    if (screen === "unlock") { setScreen("review");  return; }
+    if (screen === "review") { setScreen("quiz");    return; }
     if (screen === "quiz" && pointer > 0) setPointer((p) => p - 1);
   }
 
-  const showProgress = screen === "quiz";
+  const showProgress         = screen === "quiz";
   const showCompleteProgress =
-    screen === "review" ||
-    screen === "unlock" ||
-    screen === "form" ||
-    screen === "not_eligible";
+    screen === "review" || screen === "unlock" || screen === "form";
 
   return (
     <div
@@ -1787,9 +1397,10 @@ export default function EligibilityQuizPage() {
       {(showProgress || showCompleteProgress) && (
         <div className="shrink-0 px-4 md:px-10 pt-5 pb-1">
           <div className="relative flex items-center justify-center mb-3 min-h-[32px]">
+            {/* Desktop section pills */}
             <div className="hidden lg:flex items-center gap-0.5 absolute left-1/2 -translate-x-1/2">
               {SECTIONS.map((s, i) => {
-                const done = showCompleteProgress || s.num < activeSection;
+                const done   = showCompleteProgress || s.num < activeSection;
                 const active = showProgress && s.num === activeSection;
                 return (
                   <div key={s.num} className="flex items-center">
@@ -1798,74 +1409,50 @@ export default function EligibilityQuizPage() {
                       style={{ background: active ? "#0a0a0a" : "transparent" }}
                     >
                       <motion.div
-                        animate={{
-                          background: done || active ? "#D6FD70" : "#e0e0e0",
-                        }}
+                        animate={{ background: done || active ? "#D6FD70" : "#e0e0e0" }}
                         transition={{ duration: 0.3 }}
                         className="flex items-center justify-center shrink-0"
-                        style={{
-                          width: "16px",
-                          height: "16px",
-                          borderRadius: "50%",
-                        }}
+                        style={{ width: "16px", height: "16px", borderRadius: "50%" }}
                       >
                         {done ? (
                           <svg
-                            width="8"
-                            height="8"
-                            viewBox="0 0 10 10"
-                            fill="none"
-                            stroke="#0a0a0a"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+                            width="8" height="8" viewBox="0 0 10 10"
+                            fill="none" stroke="#0a0a0a" strokeWidth="2.5"
+                            strokeLinecap="round" strokeLinejoin="round"
                           >
                             <path d="M2 5.2l2 2 4-4" />
                           </svg>
                         ) : (
-                          <span
-                            style={{
-                              fontSize: "8px",
-                              fontWeight: 700,
-                              color: active ? "#0a0a0a" : "#bbb",
-                            }}
-                          >
+                          <span style={{ fontSize: "8px", fontWeight: 700, color: active ? "#0a0a0a" : "#bbb" }}>
                             {s.num}
                           </span>
                         )}
                       </motion.div>
                       <span
                         className="text-[14px] font-semibold transition-colors"
-                        style={{
-                          color: active ? "white" : done ? "#0a0a0a" : "#bbb",
-                        }}
+                        style={{ color: active ? "white" : done ? "#0a0a0a" : "#bbb" }}
                       >
                         {s.label}
                       </span>
                     </div>
                     {i < SECTIONS.length - 1 && (
-                      <div
-                        className="w-3 h-px"
-                        style={{ background: done ? "#D6FD70" : "#e5e5e5" }}
-                      />
+                      <div className="w-3 h-px" style={{ background: done ? "#D6FD70" : "#e5e5e5" }} />
                     )}
                   </div>
                 );
               })}
             </div>
+
+            {/* Mobile section dots */}
             <div className="flex lg:hidden items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
               {SECTIONS.map((s) => {
-                const done = showCompleteProgress || s.num < activeSection;
+                const done   = showCompleteProgress || s.num < activeSection;
                 const active = showProgress && s.num === activeSection;
                 return (
                   <motion.div
                     key={s.num}
                     animate={{
-                      background: active
-                        ? "#0a0a0a"
-                        : done
-                          ? "#D6FD70"
-                          : "#e0e0e0",
+                      background: active ? "#0a0a0a" : done ? "#D6FD70" : "#e0e0e0",
                       width: active ? "24px" : "8px",
                     }}
                     transition={{ duration: 0.3 }}
@@ -1875,19 +1462,14 @@ export default function EligibilityQuizPage() {
               })}
             </div>
           </div>
-          {showCompleteProgress ? (
-            <ProgressBarComplete />
-          ) : (
-            <ProgressBar current={currentStep} total={TOTAL_STEPS} />
-          )}
+
+          {showCompleteProgress ? <ProgressBarComplete /> : <ProgressBar current={currentStep} total={TOTAL_STEPS} />}
         </div>
       )}
 
       <main className="flex-1 w-full max-w-2xl mx-auto px-5 md:px-8 py-10 md:py-14 flex flex-col">
         <AnimatePresence mode="wait" custom={direction}>
-          {screen === "not_eligible" ? (
-            <NotEligibleScreen key="not-eligible" onBack={handleBack} />
-          ) : screen === "review" ? (
+          {screen === "review" ? (
             <ReviewScreen
               key="review"
               answers={answers}
@@ -1905,6 +1487,7 @@ export default function EligibilityQuizPage() {
               key="lead-form"
               onBack={handleBack}
               answers={answers}
+              eligible={eligible}
             />
           ) : (
             <motion.div
@@ -1916,6 +1499,7 @@ export default function EligibilityQuizPage() {
               transition={{ duration: 0.32, ease: EASE }}
               className="flex flex-col gap-0"
             >
+              {/* Section badge */}
               <div className="flex items-center gap-2 mb-5">
                 <div
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full"
@@ -1923,20 +1507,9 @@ export default function EligibilityQuizPage() {
                 >
                   <div
                     className="flex items-center justify-center shrink-0"
-                    style={{
-                      width: "18px",
-                      height: "18px",
-                      borderRadius: "50%",
-                      background: "#D6FD70",
-                    }}
+                    style={{ width: "18px", height: "18px", borderRadius: "50%", background: "#D6FD70" }}
                   >
-                    <span
-                      style={{
-                        fontSize: "9px",
-                        fontWeight: 800,
-                        color: "#0a0a0a",
-                      }}
-                    >
+                    <span style={{ fontSize: "9px", fontWeight: 800, color: "#0a0a0a" }}>
                       {activeCurrent.sectionNum}
                     </span>
                   </div>
@@ -1950,10 +1523,7 @@ export default function EligibilityQuizPage() {
                 {activeCurrent.question}
               </h1>
               {activeCurrent.sub ? (
-                <p
-                  className="text-[16px] leading-relaxed mb-8"
-                  style={{ color: "#888" }}
-                >
+                <p className="text-[16px] leading-relaxed mb-8" style={{ color: "#888" }}>
                   {activeCurrent.sub}
                 </p>
               ) : (
@@ -1979,20 +1549,13 @@ export default function EligibilityQuizPage() {
                     onClick={handleBack}
                     className="flex items-center gap-2 text-[13px] font-medium transition-colors"
                     style={{ color: "#bbb" }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.color = "#0a0a0a")
-                    }
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#0a0a0a")}
                     onMouseLeave={(e) => (e.currentTarget.style.color = "#bbb")}
                   >
                     <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      width="13" height="13" viewBox="0 0 14 14"
+                      fill="none" stroke="currentColor" strokeWidth="2"
+                      strokeLinecap="round" strokeLinejoin="round"
                     >
                       <path d="M11.5 7H2.5M6 3.5L2.5 7l3.5 3.5" />
                     </svg>
@@ -2007,20 +1570,13 @@ export default function EligibilityQuizPage() {
                     className="flex items-center gap-2 text-[13px] font-semibold transition-colors"
                     style={{ color: "#0a0a0a" }}
                     onMouseEnter={(e) => (e.currentTarget.style.color = "#555")}
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.color = "#0a0a0a")
-                    }
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#0a0a0a")}
                   >
                     Continue
                     <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      width="13" height="13" viewBox="0 0 14 14"
+                      fill="none" stroke="currentColor" strokeWidth="2"
+                      strokeLinecap="round" strokeLinejoin="round"
                     >
                       <path d="M2.5 7h9M8.5 3.5L12 7l-3.5 3.5" />
                     </svg>
@@ -2043,10 +1599,7 @@ export default function EligibilityQuizPage() {
                 className="flex items-center gap-1.5 font-semibold"
                 style={{ color: "#555", fontSize: "14px" }}
               >
-                <div
-                  className="w-2 h-2 rounded-full shrink-0"
-                  style={{ background: "#D6FD70" }}
-                />
+                <div className="w-2 h-2 rounded-full shrink-0" style={{ background: "#D6FD70" }} />
                 {t}
               </span>
             ))}

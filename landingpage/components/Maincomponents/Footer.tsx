@@ -115,7 +115,7 @@ export default function Footer() {
                   key={link.label}
                   href={link.href}
                   className="text-white/70 hover:text-white transition-colors duration-200 font-medium"
-                  style={{ fontSize: "24px" }}
+                  style={{ fontSize: "clamp(18px, 2vw, 24px)" }}
                 >
                   {link.label}
                 </a>

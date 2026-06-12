@@ -75,7 +75,7 @@ export default function Navbar() {
           style={{
             position: "fixed",
             top: 5,
-            left: 550,
+            left: 560,
             zIndex: 51,
             pointerEvents: "none",
             userSelect: "none",
@@ -90,7 +90,7 @@ export default function Navbar() {
           style={{
             position: "fixed",
             top: 5,
-            right: 550,
+            right: 560,
             zIndex: 51,
             pointerEvents: "none",
             userSelect: "none",
@@ -100,7 +100,7 @@ export default function Navbar() {
 
         {/* ── Nav pill + dropdown unified container ── */}
         <div
-          className="w-[60vw] md:w-[min(760px,calc(100%-48px))]"
+          className="w-[calc(100%-32px)] md:w-[min(760px,calc(100%-48px))]"
           style={{
             pointerEvents: "auto",
             position: "relative",

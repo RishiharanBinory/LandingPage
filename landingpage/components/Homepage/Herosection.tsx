@@ -57,14 +57,15 @@ export default function HeroSection() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            justifyContent: "center",  
             // KEY FIX: Mobile gets a larger top padding to push content into the
             // optical center of the sky image. Desktop stays at the original value.
             // clamp(min, preferred, max) — on a 390px phone: 14vw = 54px (too low),
             // so we use a fixed 140px floor for mobile via a responsive class instead.
-            paddingTop: "clamp(190px, 16vw, 180px)",
-            paddingLeft: "clamp(16px, 4vw, 48px)",
-            paddingRight: "clamp(16px, 4vw, 48px)",
-            paddingBottom: "40px",
+    paddingTop: "clamp(110px, 140vh, 150px)",
+    paddingBottom: "clamp(20px, 3vh, 60px)",
+    paddingLeft: "clamp(16px, 4vw, 48px)",
+    paddingRight: "clamp(16px, 4vw, 48px)",
             flex: 1,
           }}
         >

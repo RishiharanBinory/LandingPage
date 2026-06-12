@@ -63,7 +63,7 @@ export default function MisconceptionsSection() {
 
         {/* ── Subheading ── */}
         <motion.p
-          className="text-[19px] md:text-[18px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-14"
+          className="text-[18px] md:text-[18px] text-[#888] text-center max-w-[460px] mx-auto leading-relaxed mb-14"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -74,9 +74,9 @@ export default function MisconceptionsSection() {
         </motion.p>
 
         {/* ── Grid ── */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-5 md:gap-6 items-center justify-items-center px-2 md:px-0">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-5 md:gap-6 items-center justify-items-center px-2 md:px-0">
           {/* Left column */}
-          <div className="w-full flex flex-col gap-5 order-2 md:order-1">
+         <div className="w-full flex flex-col gap-5 order-2 lg:order-1">
             <Card
               index={0}
               myth={misconceptions[0].myth}
@@ -93,7 +93,7 @@ export default function MisconceptionsSection() {
 
           {/* Centre image — smaller on mobile */}
           <motion.div
-            className="w-[55%] sm:w-[45%] md:w-[260px] lg:w-[300px] order-1 md:order-2 shrink-0"
+            className="w-[55%] sm:w-[45%] lg:w-[260px] xl:w-[300px] order-1 lg:order-2 shrink-0"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -203,7 +203,7 @@ function Card({
             <path d="M2 5.2l2 2 4-4" />
           </svg>
         </div>
-        <p className="text-[16px] md:text-[15px] font-bold text-[#0a0a0a] leading-snug">
+        <p className="text-[16px] md:text-[16px] font-bold text-[#0a0a0a] leading-snug">
           {truth}
         </p>
       </div>

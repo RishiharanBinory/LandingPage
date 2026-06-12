@@ -94,7 +94,7 @@ export default function StudentFinanceSection() {
           transition={{ duration: 0.55, ease: EASE, delay: 0.18 }}
         >
           {/* ── MOBILE: stacked cards, image always visible on the right ── */}
-          <div className="flex flex-col gap-2 md:hidden">
+          <div className="flex flex-col gap-2 lg:hidden">
             {cards.map((card, i) => (
               <MobileFinanceCard key={card.id} card={card} index={i} />
             ))}
@@ -102,7 +102,7 @@ export default function StudentFinanceSection() {
 
           {/* ── DESKTOP: horizontal accordion, untouched ── */}
           <div
-            className="hidden md:flex overflow-hidden"
+            className="hidden lg:flex overflow-hidden"
             style={{ borderRadius: "14px", minHeight: "320px", gap: "8px" }}
           >
             {cards.map((card, i) => (
@@ -187,7 +187,7 @@ function MobileFinanceCard({ card, index }: { card: Card; index: number }) {
         style={{
           position: "relative",
           width: "100%",
-          height: "200px",
+          height: "320px",
           flexShrink: 0,
           borderRadius: "10px",
           overflow: "hidden",
@@ -197,7 +197,7 @@ function MobileFinanceCard({ card, index }: { card: Card; index: number }) {
           src={card.image}
           alt={card.label}
           fill
-          className="object-cover object-top"
+          style={{ objectFit: "cover", objectPosition: "center 20%" }}
           priority={index === 0}
         />
       </div>
@@ -205,7 +205,7 @@ function MobileFinanceCard({ card, index }: { card: Card; index: number }) {
       {/* CONTENT */}
       <div
         style={{
-          padding: "16px 4px 8px",  /* ← no left offset, clean alignment */
+          padding: "16px 4px 8px" /* ← no left offset, clean alignment */,
           display: "flex",
           flexDirection: "column",
           gap: "8px",

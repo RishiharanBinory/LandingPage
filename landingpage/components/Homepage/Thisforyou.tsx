@@ -63,19 +63,42 @@ function Chip({
     >
       <div
         className="flex items-center justify-center shrink-0"
-        style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#D6FD70" }}
+        style={{
+          width: "40px",
+          height: "40px",
+          borderRadius: "12px",
+          background: "#D6FD70",
+        }}
       >
         {icon}
       </div>
       <div className="flex flex-col">
-        <span className="text-[15px] font-bold text-[#0a0a0a] leading-snug">{label}</span>
-        <span className="text-[13px] text-[#999] leading-snug mt-[2px]">{sub}</span>
+        <span className="text-[15px] font-bold text-[#0a0a0a] leading-snug">
+          {label}
+        </span>
+        <span className="text-[13px] text-[#999] leading-snug mt-[2px]">
+          {sub}
+        </span>
       </div>
       <div
         className="ml-auto flex items-center justify-center shrink-0"
-        style={{ width: "22px", height: "22px", borderRadius: "50%", background: "#0a0a0a" }}
+        style={{
+          width: "22px",
+          height: "22px",
+          borderRadius: "50%",
+          background: "#0a0a0a",
+        }}
       >
-        <svg width="11" height="11" viewBox="0 0 10 10" fill="none" stroke="#D6FD70" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="11"
+          height="11"
+          viewBox="0 0 10 10"
+          fill="none"
+          stroke="#D6FD70"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M2 5.2l2 2 4-4" />
         </svg>
       </div>
@@ -90,9 +113,6 @@ export default function ThisIsForYouSection() {
       style={{ fontFamily: "var(--font-plus-jakarta)" }}
     >
       <div className="max-w-[1100px] mx-auto flex flex-col items-center">
-
-
-
         {/* Heading */}
         <motion.h2
           className="text-[32px] md:text-[48px] font-extrabold leading-[1.12] tracking-tight text-[#0a0a0a] text-center max-w-[680px] mx-auto mb-4"
@@ -104,7 +124,13 @@ export default function ThisIsForYouSection() {
           This opportunity is for{" "}
           <span
             className="italic"
-            style={{ background: "#D6FD70", color: "#0a0a0a", padding: "0 10px 2px", borderRadius: "6px", display: "inline-block" }}
+            style={{
+              background: "#D6FD70",
+              color: "#0a0a0a",
+              padding: "0 10px 2px",
+              borderRadius: "6px",
+              display: "inline-block",
+            }}
           >
             you.
           </span>
@@ -118,16 +144,16 @@ export default function ThisIsForYouSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         >
-          It doesn&apos;t matter how long it&apos;s been since you last studied, you may still be eligible for full funding.
+          It doesn&apos;t matter how long it&apos;s been since you last studied,
+          you may still be eligible for full funding.
         </motion.p>
 
         {/* Three-column layout — image column is now fixed at 360px / 420px */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_360px_1fr] lg:grid-cols-[1fr_420px_1fr] gap-6 md:gap-8 items-center justify-items-center">
-
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_340px_1fr] xl:grid-cols-[1fr_400px_1fr] gap-6 md:gap-8 items-center justify-items-center">
           {/* Left */}
-          <div className="w-full flex flex-col gap-4 order-2 md:order-1">
+          <div className="w-full flex flex-col gap-4 order-2 lg:order-1">
             <motion.p
-              className="text-[14px] font-bold uppercase tracking-widest text-[#bbb] mb-1"
+              className="text-[16px] font-bold uppercase tracking-widest text-[#bbb] mb-1"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -136,13 +162,19 @@ export default function ThisIsForYouSection() {
               Your status
             </motion.p>
             {eligibility.map((item, i) => (
-              <Chip key={item.label} index={i} label={item.label} sub={item.sub} icon={item.icon} />
+              <Chip
+                key={item.label}
+                index={i}
+                label={item.label}
+                sub={item.sub}
+                icon={item.icon}
+              />
             ))}
           </div>
 
           {/* Centre image */}
           <motion.div
-            className="order-1 md:order-2 shrink-0 w-[65%] md:w-full"
+            className="order-1 lg:order-2 shrink-0 w-[65%] lg:w-full"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -150,7 +182,11 @@ export default function ThisIsForYouSection() {
           >
             <div
               className="relative w-full overflow-hidden border border-[#e8e8e8]"
-              style={{ aspectRatio: "3/4", borderRadius: "24px", background: "#f0f0ee" }}
+              style={{
+                aspectRatio: "3/4",
+                borderRadius: "24px",
+                background: "#f0f0ee",
+              }}
             >
               <Image
                 src="/whothis.jpg"
@@ -165,7 +201,7 @@ export default function ThisIsForYouSection() {
           {/* Right */}
           <div className="w-full flex flex-col gap-4 order-3">
             <motion.p
-              className="text-[14px] font-bold uppercase tracking-widest text-[#bbb] mb-1"
+              className="text-[16px] font-bold uppercase tracking-widest text-[#bbb] mb-1"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -174,11 +210,16 @@ export default function ThisIsForYouSection() {
               Your goal
             </motion.p>
             {goals.map((item, i) => (
-              <Chip key={item.label} index={i} label={item.label} sub={item.sub} icon={item.icon} />
+              <Chip
+                key={item.label}
+                index={i}
+                label={item.label}
+                sub={item.sub}
+                icon={item.icon}
+              />
             ))}
           </div>
         </div>
-
       </div>
     </section>
   );
