@@ -32,7 +32,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "eligibilty checker UK",
+  title: "Eligibility Checker UK",
   description: "Check if you qualify for UK Student Finance in 60 seconds.",
 };
 
@@ -47,10 +47,34 @@ export default function RootLayout({
       className={`${plusJakarta.variable} ${libreCaslon.variable} ${geistMono.variable}`}
     >
       <body className={plusJakarta.className}>
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-NKZ9CPBQ"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+
         <NavigationGuard />
         <Navbar />
         <main style={{ margin: 0, padding: 0 }}>{children}</main>
         <Footer />
+
+        {/* Google Tag Manager */}
+        <Script
+          id="gtm"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','GTM-NKZ9CPBQ');
+            `,
+          }}
+        />
 
         <Script
           id="plerdy-analytics"
