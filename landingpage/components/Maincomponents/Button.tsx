@@ -7,12 +7,14 @@ interface EligibilityButtonProps {
   label?: string;
   onClick?: () => void;
   className?: string;
+  id?: string;
 }
 
 export default function EligibilityButton({
   label = "Check My Eligibility",
   onClick,
   className = "",
+  id,
 }: EligibilityButtonProps) {
   const [hovered, setHovered] = useState(false);
   const [scale, setScale] = useState(18);
@@ -21,6 +23,7 @@ export default function EligibilityButton({
   return (
     <button
       ref={btnRef}
+      id={id}
       onClick={onClick}
       onMouseEnter={() => {
         if (btnRef.current) {

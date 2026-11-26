@@ -694,7 +694,12 @@ function ReviewScreen({
         transition={{ delay: 0.45, duration: 0.4, ease: EASE }}
         className="flex flex-col items-start gap-3"
       >
-        <EligibilityButton label="Confirm & Continue" onClick={onContinue} />
+        <EligibilityButton
+          label="Confirm & Continue"
+          onClick={onContinue}
+          id="confirm-continue-btn"
+          className="confirm-continue-btn"
+        />
         <p className="text-[14px]" style={{ color: "#bbb" }}>
           You can still go back and edit any answer above.
         </p>
@@ -1048,7 +1053,12 @@ function UnlockScreen({
           transition={{ delay: 0.38, duration: 0.4, ease: EASE }}
           className="flex flex-col items-start gap-3 mb-5"
         >
-          <EligibilityButton label="Unlock my result" onClick={onUnlock} />
+          <EligibilityButton
+            label="Unlock my result"
+            onClick={onUnlock}
+            id="unlock-result-btn"
+            className="unlock-result-btn"
+          />
           <p className="text-[14px]" style={{ color: "#bbb" }}>
             Free · 30 seconds · No documents needed
           </p>
@@ -1296,6 +1306,8 @@ function LeadCaptureScreen({
         <EligibilityButton
           label={submitting ? "Sending…" : "See My Result"}
           onClick={handleSubmit}
+          id="see-result-btn"
+          className="see-result-btn"
         />
         <p className="text-[12px]" style={{ color: "#bbb" }}>
           We&apos;ll only use your details to send your result. No spam, ever.
